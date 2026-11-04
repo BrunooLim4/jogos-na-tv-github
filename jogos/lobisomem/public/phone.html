@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c1230">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Lobisomem · Controle</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="phone-page">
+  <div class="phone" id="phone">
+    <header class="phone-header">
+      <span class="logo-word">Lobisomem</span>
+      <span class="code-chip">sala <strong id="room-code">…</strong></span>
+    </header>
+
+    <section class="screen center-screen" id="screen-loading">
+      <p>Conectando à sala…</p>
+    </section>
+
+    <!-- Entrar na sala -->
+    <form class="screen hidden" id="screen-join" autocomplete="off">
+      <h1>Entrar na vila</h1>
+      <p class="lead">Seu nome e uma ficha de cor. O personagem você recebe na partida.</p>
+      <div class="field">
+        <label for="name-input">Seu nome</label>
+        <input id="name-input" name="name" maxlength="14" placeholder="Ex.: Bruno" enterkeyhint="done" required>
+      </div>
+      <div class="field">
+        <label id="colors-label">Sua ficha</label>
+        <div class="colors" id="colors" role="group" aria-labelledby="colors-label"></div>
+      </div>
+      <p class="form-error hidden" id="join-error" role="alert"></p>
+      <div class="actions">
+        <button class="btn" id="join-button" type="submit" disabled>Entrar na sala</button>
+      </div>
+    </form>
+
+    <!-- Dentro da sala -->
+    <section class="screen hidden" id="screen-room">
+      <div class="panel me-card" id="me-card"></div>
+      <button class="btn" id="ready-button" type="button">Estou pronto!</button>
+      <div class="panel leader-box hidden" id="leader-box">
+        <button class="btn" id="start-button" type="button" disabled>Começar partida</button>
+        <p id="leader-hint"></p>
+        <button class="btn secondary tv-sound-button" type="button">🔊 Som da TV: ligado</button>
+      </div>
+      <p class="waiting-leader hidden" id="waiting-leader"></p>
+      <div class="others">
+        <h2 id="others-title">Na sala</h2>
+        <ul id="others-list"></ul>
+      </div>
+      <div class="actions">
+        <button class="link-button" id="leave-button" type="button">Sair da sala</button>
+      </div>
+    </section>
+
+    <!-- Partida: a tela é IGUAL para todos os personagens (quem está do lado não descobre nada) -->
+    <section class="screen hidden" id="screen-game">
+      <div class="turn-banner" id="turn-banner"></div>
+
+      <!-- a sua carta: SEGURE para ver -->
+      <div class="hold" id="hold" role="button" aria-label="Segure para ver a sua carta">
+        <div id="hold-card"></div>
+        <div class="hold-text">
+          <div class="hold-public">
+            <span class="hold-title" id="hold-title">Sua carta</span>
+            <span class="hold-sub" id="hold-sub">Segure aqui para ver quem você é.</span>
+          </div>
+          <div class="hold-secret" id="hold-secret"></div>
+        </div>
+      </div>
+
+      <div class="day-clock hidden" id="day-clock"></div>
+      <button class="btn hidden" id="confirm-button" type="button">Confirmar</button>
+      <div class="pick-area hidden" id="pick-area">
+        <p class="pick-label">Jogadores</p>
+        <div class="pick-players" id="pick-players"></div>
+        <p class="pick-label" id="center-label">O meio</p>
+        <div class="pick-center" id="pick-center"></div>
+      </div>
+      <p class="pick-done hidden" id="pick-done"></p>
+
+      <div class="look-tv hidden" id="look-tv">Olhem a TV!<small>O resultado está saindo lá.</small></div>
+      <div class="result-card hidden" id="result-card">
+        <div id="result-card-img"></div>
+        <div>
+          <p class="result-title" id="result-title"></p>
+          <p class="result-text" id="result-text"></p>
+        </div>
+      </div>
+      <p class="result-headline hidden" id="result-headline"></p>
+
+      <div class="leader-tools hidden" id="leader-tools">
+        <button class="btn" id="vote-now-button" type="button">Votar agora</button>
+        <button class="btn secondary" id="add-minute-button" type="button">+1 minuto de conversa</button>
+        <button class="btn" id="again-button" type="button">Jogar de novo</button>
+      </div>
+      <p class="waiting-leader hidden" id="waiting-next"></p>
+
+      <div class="actions">
+        <button class="btn secondary hidden" id="skip-button" type="button">Pular quem está desconectado</button>
+        <button class="btn secondary tv-sound-button hidden" id="game-tv-sound" type="button">🔊 Som da TV: ligado</button>
+        <button class="link-button hidden" id="end-game-button" type="button">Encerrar partida (líder)</button>
+      </div>
+    </section>
+
+    <!-- Mensagens (sala não existe, cheia, removido...) -->
+    <section class="screen center-screen hidden" id="screen-message">
+      <h1 id="message-title"></h1>
+      <p id="message-text"></p>
+      <button class="btn secondary" id="message-button" type="button">Tentar de novo</button>
+    </section>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando…</div>
+
+  <script type="module" src="/phone.js"></script>
+</body>
+</html>

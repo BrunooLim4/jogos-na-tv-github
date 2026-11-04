@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogo novo · TV</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Sala: QR code e jogadores entrando (estilo padrão) -->
+  <div class="tv-lobby" id="lobby-view">
+    <h1 class="title">Jogo novo</h1>
+    <main class="lobby-grid">
+      <section class="panel join-card" aria-labelledby="join-title">
+        <h2 id="join-title">Entre pelo celular</h2>
+        <div class="qr"><img id="qr" alt="QR code para entrar na sala"></div>
+        <ol class="join-steps">
+          <li>Abra a câmera</li>
+          <li>Aponte para o código</li>
+          <li>Toque no link</li>
+        </ol>
+        <p class="join-url">ou digite: <strong id="join-url">…</strong></p>
+        <p class="join-note">O celular precisa estar no mesmo Wi-Fi deste computador.</p>
+      </section>
+
+      <section class="panel players-panel" aria-labelledby="players-title">
+        <h2 id="players-title">Jogadores <span class="count" id="player-count">0/6</span></h2>
+        <ul class="seats" id="seats"></ul>
+        <p class="start-hint" id="start-hint">Esperando jogadores…</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Partida (TROCAR: a mesa do jogo entra no lugar do quadro tracejado) -->
+  <div class="tv-game hidden" id="game-view">
+    <header class="game-top">
+      <h1 class="title">Jogo novo</h1>
+      <ul class="players-row" id="players-row"></ul>
+      <span class="round-chip" id="round-chip"></span>
+    </header>
+    <div class="table-placeholder">
+      A mesa do jogo entra aqui.
+      <div class="reveal" id="reveal"></div><!-- revelações (carimbos, cartas virando) por cima da mesa -->
+    </div>
+    <ul class="events" id="events"></ul>
+  </div>
+
+  <div class="sound-banner hidden" id="sound-banner">🔊 Aperte qualquer tecla para ligar o som</div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando ao servidor…</div>
+
+  <script type="module" src="/tv.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+// As palavras do tabuleiro (lista própria, em português). Cada partida sorteia 25.
+// Regras da lista: substantivos que todo mundo conhece, no máximo 9 letras (cabem
+// na carta do celular) e, de preferência, com mais de um sentido (BANCO, MANGA,
+// PILHA, ZEBRA...) — é isso que deixa as dicas divertidas.
+// tools/teste-regras.mjs confere: sem repetidas, até 9 letras, pelo menos 400.
+
+export const WORDS = [
+  // natureza e céu
+  'MAR', 'ONDA', 'PRAIA', 'AREIA', 'ILHA', 'RIO', 'LAGO', 'MONTANHA', 'VULCÃO',
+  'DESERTO', 'FLORESTA', 'SELVA', 'CAMPO', 'CAVERNA', 'CACHOEIRA', 'GELEIRA',
+  'OCEANO', 'POÇO', 'FONTE', 'CÉU', 'NUVEM', 'CHUVA', 'NEVE', 'GELO', 'VENTO',
+  'RAIO', 'TROVÃO', 'NEBLINA', 'FURACÃO', 'TERREMOTO', 'SOL', 'LUA', 'ESTRELA',
+  'PLANETA', 'COMETA', 'GALÁXIA', 'ECLIPSE', 'ÓRBITA', 'FOGO', 'FUMAÇA', 'LAMA',
+  'PEDRA', 'ROCHA', 'BARRO', 'POEIRA',
+  // casa e cidade
+  'CASA', 'PORTA', 'JANELA', 'TELHADO', 'PAREDE', 'MURO', 'CERCA', 'PORTÃO',
+  'ESCADA', 'ELEVADOR', 'PORÃO', 'SÓTÃO', 'CHAMINÉ', 'VARANDA', 'PISCINA',
+  'GARAGEM', 'QUINTAL', 'JARDIM', 'COZINHA', 'SALA', 'QUARTO', 'BANHEIRO',
+  'ANDAR', 'TETO', 'PISO', 'CIDADE', 'FAZENDA', 'ESTRADA', 'TÚNEL', 'PONTE',
+  'RUA', 'ESQUINA', 'PRAÇA', 'PARQUE', 'ESCOLA', 'HOSPITAL', 'IGREJA',
+  'CASTELO', 'PALÁCIO', 'MUSEU', 'TEATRO', 'CINEMA', 'CIRCO', 'MERCADO', 'FEIRA',
+  'PADARIA', 'FARMÁCIA', 'HOTEL', 'PRISÃO', 'ESTÁDIO', 'AEROPORTO', 'PORTO',
+  'FAROL', 'MOINHO', 'TORRE', 'TEMPLO', 'PIRÂMIDE', 'ESTÁTUA', 'LABIRINTO',
+  // transporte
+  'TREM', 'NAVIO', 'AVIÃO', 'CARRO', 'ÔNIBUS', 'BICICLETA', 'MOTO', 'BARCO',
+  'SUBMARINO', 'METRÔ', 'TÁXI', 'CAMINHÃO', 'TRATOR', 'FOGUETE', 'NAVE', 'BALÃO',
+  'CANOA', 'JANGADA', 'CARROÇA', 'PATINETE', 'SKATE', 'RODA', 'PNEU', 'MOTOR',
+  'FREIO', 'VOLANTE', 'BUZINA', 'MARCHA', 'ÂNCORA', 'VELA', 'REMO',
+  // personagens e profissões
+  'REI', 'RAINHA', 'PRÍNCIPE', 'PRINCESA', 'CAVALEIRO', 'DAMA', 'VALETE',
+  'CORINGA', 'BOBO', 'PIRATA', 'NINJA', 'ROBÔ', 'FANTASMA', 'VAMPIRO', 'BRUXA',
+  'FADA', 'DRAGÃO', 'SEREIA', 'GIGANTE', 'ANÃO', 'ANJO', 'ZUMBI', 'MÚMIA',
+  'MONSTRO', 'HERÓI', 'ESPIÃO', 'DETETIVE', 'POLÍCIA', 'LADRÃO', 'JUIZ',
+  'MÉDICO', 'DENTISTA', 'PALHAÇO', 'MÁGICO', 'CANTOR', 'PINTOR', 'PILOTO',
+  'SOLDADO', 'GENERAL', 'CAPITÃO', 'PESCADOR', 'PADEIRO', 'CARTEIRO', 'BOMBEIRO',
+  'PROFESSOR', 'ALUNO', 'BEBÊ', 'CAUBÓI', 'SACI', 'CUCA', 'BOTO', 'CURUPIRA',
+  'GÊNIO',
+  // bichos
+  'CACHORRO', 'GATO', 'RATO', 'LEÃO', 'TIGRE', 'URSO', 'LOBO', 'RAPOSA',
+  'COELHO', 'CAVALO', 'VACA', 'PORCO', 'GALINHA', 'GALO', 'PATO', 'PERU',
+  'PEIXE', 'TUBARÃO', 'BALEIA', 'GOLFINHO', 'POLVO', 'SIRI', 'CAMARÃO', 'ÁGUIA',
+  'CORUJA', 'PAPAGAIO', 'POMBO', 'MORCEGO', 'COBRA', 'SAPO', 'TARTARUGA',
+  'JACARÉ', 'MACACO', 'ELEFANTE', 'GIRAFA', 'ZEBRA', 'CAMELO', 'ABELHA',
+  'FORMIGA', 'ARANHA', 'MOSCA', 'BORBOLETA', 'BARATA', 'MOSQUITO', 'MINHOCA',
+  'LESMA', 'OVELHA', 'BODE', 'TOURO', 'BURRO', 'CANGURU', 'PINGUIM', 'PANDA',
+  'GORILA', 'TUCANO', 'ARARA', 'ONÇA', 'CAPIVARA', 'PREGUIÇA', 'TATU', 'MICO',
+  'JABUTI', 'CISNE', 'PAVÃO', 'GRILO', 'ESQUILO', 'MAMUTE',
+  // comida
+  'PÃO', 'BOLO', 'QUEIJO', 'OVO', 'LEITE', 'MEL', 'AÇÚCAR', 'SAL', 'PIMENTA',
+  'ARROZ', 'FEIJÃO', 'MILHO', 'BATATA', 'TOMATE', 'CEBOLA', 'ALHO', 'CENOURA',
+  'ABÓBORA', 'BANANA', 'MAÇÃ', 'UVA', 'LIMÃO', 'LARANJA', 'MANGA', 'ABACAXI',
+  'MORANGO', 'COCO', 'MELANCIA', 'PERA', 'PIZZA', 'SOPA', 'SALADA', 'PIPOCA',
+  'CHOCOLATE', 'SORVETE', 'BALA', 'PICOLÉ', 'BISCOITO', 'PASTEL', 'COXINHA',
+  'CAFÉ', 'CHÁ', 'SUCO', 'VINHO', 'MOLHO', 'CARNE', 'FRANGO', 'TORTA', 'GELEIA',
+  'FARINHA', 'MASSA', 'PUDIM', 'FEIJOADA', 'CHURRASCO', 'PAMONHA', 'BOMBOM',
+  'GUARANÁ', 'AÇAÍ', 'CAJU', 'GOIABA', 'CANELA', 'CRAVO', 'GEMA', 'CLARA', 'NOZ',
+  'AZEITONA', 'PEPINO', 'ALFACE',
+  // objetos
+  'BOLA', 'CAIXA', 'CHAVE', 'CADEADO', 'ANEL', 'COLAR', 'BRINCO', 'RELÓGIO',
+  'ÓCULOS', 'CHAPÉU', 'BONÉ', 'SAPATO', 'BOTA', 'MEIA', 'LUVA', 'CAMISA', 'CALÇA',
+  'SAIA', 'VESTIDO', 'GRAVATA', 'CINTO', 'BOLSA', 'MOCHILA', 'MALA', 'ESPELHO',
+  'PENTE', 'ESCOVA', 'SABÃO', 'TOALHA', 'TESOURA', 'AGULHA', 'LINHA', 'BOTÃO',
+  'MARTELO', 'PREGO', 'SERRA', 'MACHADO', 'CORDA', 'CORRENTE', 'LÂMPADA',
+  'LANTERNA', 'FÓSFORO', 'BOMBA', 'ESPADA', 'ESCUDO', 'ARCO', 'FLECHA', 'CANHÃO',
+  'TAMBOR', 'VIOLÃO', 'PIANO', 'FLAUTA', 'SINO', 'APITO', 'MICROFONE', 'RÁDIO',
+  'TELEVISÃO', 'CÂMERA', 'TELEFONE', 'TECLADO', 'TELA', 'LIVRO', 'CADERNO',
+  'LÁPIS', 'CANETA', 'BORRACHA', 'RÉGUA', 'MAPA', 'GLOBO', 'BANDEIRA', 'MOEDA',
+  'NOTA', 'CARTEIRA', 'CARTÃO', 'SELO', 'ENVELOPE', 'PACOTE', 'PRESENTE', 'PIPA',
+  'BONECA', 'DADO', 'CARTA', 'BALANÇA', 'COPO', 'XÍCARA', 'PRATO', 'GARFO',
+  'FACA', 'COLHER', 'PANELA', 'FORNO', 'GELADEIRA', 'FOGÃO', 'PIA', 'TORNEIRA',
+  'BALDE', 'VASSOURA', 'LIXO', 'VASO', 'QUADRO', 'TAPETE', 'CORTINA', 'COBERTOR',
+  'BERÇO', 'BANHEIRA', 'CHUVEIRO', 'ÍMÃ', 'BÚSSOLA', 'RADAR', 'ALARME', 'ALGEMA',
+  'COFRE', 'TESOURO', 'COROA', 'TRONO', 'VARINHA', 'POÇÃO', 'MÁSCARA',
+  'CAPACETE', 'MOLA', 'PILHA', 'CABO', 'PLANTA', 'CAPA', 'FOLHA', 'PEÇA', 'TACO',
+  'TRAVA', 'LUPA', 'AMPULHETA', 'AGENDA', 'BANCO', 'MESA', 'CADEIRA', 'CAMA',
+  // corpo
+  'MÃO', 'PÉ', 'BRAÇO', 'PERNA', 'CABEÇA', 'OLHO', 'ORELHA', 'NARIZ', 'BOCA',
+  'DENTE', 'LÍNGUA', 'CORAÇÃO', 'OSSO', 'SANGUE', 'CABELO', 'BARBA', 'UNHA',
+  'JOELHO', 'COSTAS', 'DEDO', 'PESCOÇO', 'OMBRO', 'PALMA', 'PULSO', 'PEITO',
+  'CÉREBRO', 'BIGODE', 'ASA', 'BICO', 'GARRA', 'CHIFRE', 'RABO', 'CAUDA', 'CASCO',
+  'CRISTA', 'CASCA',
+  // plantas
+  'FLOR', 'ROSA', 'LÍRIO', 'GIRASSOL', 'MARGARIDA', 'CACTO', 'BAMBU', 'PALMEIRA',
+  'COQUEIRO', 'PINHEIRO', 'GRAMA', 'MUSGO', 'ALGA', 'COGUMELO', 'SEMENTE', 'RAIZ',
+  'TRONCO', 'GALHO', 'ESPINHO',
+  // materiais
+  'OURO', 'PRATA', 'BRONZE', 'FERRO', 'AÇO', 'VIDRO', 'DIAMANTE', 'PÉROLA',
+  'CRISTAL', 'CARVÃO', 'PETRÓLEO', 'PAPEL', 'PLÁSTICO', 'MADEIRA', 'ALGODÃO',
+  'SEDA', 'LÃ', 'COURO', 'ESMERALDA', 'RUBI',
+  // ideias, festas e brincadeiras
+  'TEMPO', 'SONHO', 'MEDO', 'SORTE', 'AMOR', 'GUERRA', 'PAZ', 'FESTA', 'JOGO',
+  'MÚSICA', 'DANÇA', 'FILME', 'HISTÓRIA', 'SEGREDO', 'MISTÉRIO', 'MAGIA',
+  'VIAGEM', 'FÉRIAS', 'NATAL', 'CARNAVAL', 'PÁSCOA', 'CASAMENTO', 'AULA', 'PROVA',
+  'PONTO', 'CRUZ', 'CÍRCULO', 'QUADRADO', 'TRIÂNGULO', 'NÚMERO', 'LETRA',
+  'PALAVRA', 'VOZ', 'GRITO', 'SILÊNCIO', 'BARULHO', 'SOMBRA', 'REFLEXO', 'ECO',
+  'CÓDIGO', 'SENHA', 'CADEIA', 'GRADE', 'LEI', 'MULTA', 'CONTA', 'AÇÃO', 'MINA',
+  'SALTO', 'PASSO', 'SAMBA', 'CAPOEIRA', 'PAGODE', 'FORRÓ', 'FREVO', 'NOVELA',
+  'PIADA', 'CHARADA', 'ENIGMA', 'LENDA', 'FÁBULA', 'POEMA',
+  // esporte e jogos de mesa
+  'FUTEBOL', 'GOL', 'TÊNIS', 'BOXE', 'CORRIDA', 'NATAÇÃO', 'SURFE', 'BOLICHE',
+  'GOLFE', 'VÔLEI', 'JUDÔ', 'KARATÊ', 'TIME', 'TORCIDA', 'MEDALHA', 'TROFÉU',
+  'COPA', 'QUADRA', 'REDE', 'RAQUETE', 'PÊNALTI', 'ESCANTEIO', 'XADREZ', 'BISPO',
+  'PEÃO', 'CHEQUE', 'DOMINÓ', 'BARALHO',
+  // lugares do mundo
+  'ÁFRICA', 'CHINA', 'JAPÃO', 'ÍNDIA', 'EGITO', 'GRÉCIA', 'ROMA', 'PARIS',
+  'LONDRES', 'ATLÂNTIDA', 'AMAZÔNIA', 'EUROPA', 'POLO', 'EQUADOR', 'MÉXICO',
+  'ALASCA', 'HAVAÍ', 'VENEZA', 'TÓQUIO', 'BAHIA', 'PANTANAL', 'SERTÃO', 'PAMPA',
+  // tecnologia
+  'VÍRUS', 'INTERNET', 'SATÉLITE', 'LASER', 'ANTENA', 'BATERIA', 'CHIP',
+];

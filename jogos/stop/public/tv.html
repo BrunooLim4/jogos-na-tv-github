@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stop! · TV</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tv.css">
+  <link rel="stylesheet" href="/visual.css">
+</head>
+<body class="tv">
+  <!-- Sala: o palco do programa — o letreiro, o QR no telão e os participantes nas
+       bancadas. Palco fixo de 1920 × 1080, escalado para a tela (fitStage). -->
+  <div class="tv-lobby" id="lobby-view">
+    <div class="stage">
+      <div class="lights" aria-hidden="true"><i></i><i></i></div>
+
+      <section class="join-card" aria-labelledby="join-title">
+        <h2 id="join-title">Entre pelo celular</h2>
+        <div class="qr"><img id="qr" alt="QR code para entrar na sala"></div>
+        <ol class="join-steps">
+          <li>Abra a câmera</li>
+          <li>Aponte para o código</li>
+          <li>Toque no link</li>
+        </ol>
+        <p class="join-url">ou digite: <strong id="join-url">…</strong></p>
+        <p class="join-note">O celular precisa estar no mesmo Wi-Fi deste computador.</p>
+      </section>
+
+      <header class="sign-box">
+        <h1 class="sign" id="sign"><span class="sign-text">Stop!</span></h1>
+        <p class="sign-sub">uma letra · uma palavra para cada categoria</p>
+      </header>
+
+      <section class="players-panel" aria-labelledby="players-title">
+        <h2 id="players-title">Participantes <span class="count" id="player-count">0/10</span></h2>
+        <ul class="seats" id="seats"></ul>
+      </section>
+      <p class="start-hint" id="start-hint">Esperando jogadores…</p>
+    </div>
+  </div>
+
+  <!-- Partida: o mesmo palco -->
+  <div class="tv-game hidden" id="game-view">
+    <div class="stage" id="stage">
+      <div class="lights" aria-hidden="true"><i></i><i></i></div>
+      <header class="st-top">
+        <div class="st-brand"><span class="st-title">Stop!</span><span class="st-round" id="round-label"></span></div>
+        <div class="st-letter" id="letter"><span id="letter-text">?</span></div>
+        <div class="st-clock" id="clock"></div>
+      </header>
+
+      <main class="st-main" id="main">
+        <h2 class="st-heading" id="heading"></h2>
+        <p class="st-sub" id="sub"></p>
+        <div class="st-board" id="board"></div>
+      </main>
+
+      <aside class="st-players">
+        <h3>Jogadores</h3>
+        <ol id="players"></ol>
+      </aside>
+
+      <div class="st-timebar"><i id="timebar"></i></div>
+      <div class="reveal" id="reveal"></div><!-- roleta, STOP!, carimbos, confete, por cima de tudo -->
+    </div>
+  </div>
+
+  <div class="sound-banner hidden" id="sound-banner">🔊 Aperte qualquer tecla para ligar o som</div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando ao servidor…</div>
+
+  <script type="module" src="/tv.js"></script>
+</body>
+</html>

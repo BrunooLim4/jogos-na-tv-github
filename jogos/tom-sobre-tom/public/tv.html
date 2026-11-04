@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR" class="visual">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tom Sobre Tom · TV</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/visual.css">
+</head>
+<body class="tv">
+  <!-- Sala: o logo na frente da parede de cores, o QR code e os jogadores entrando -->
+  <div class="tv-lobby" id="lobby-view">
+    <div class="hero" aria-hidden="true">
+      <div class="hero-wall" id="hero-wall"></div>
+      <div class="logo big"><span class="logo-word">TOM</span><span class="logo-and"><i></i>SOBRE<i></i></span><span class="logo-word">TOM</span></div>
+      <div class="bursts left"></div>
+      <div class="bursts right"></div>
+    </div>
+    <main class="lobby-grid">
+      <section class="panel join-card" aria-labelledby="join-title">
+        <h2 id="join-title">Entre pelo celular</h2>
+        <div class="qr"><img id="qr" alt="QR code para entrar na sala"></div>
+        <ol class="join-steps">
+          <li>Abra a câmera</li>
+          <li>Aponte para o código</li>
+          <li>Toque no link</li>
+        </ol>
+        <p class="join-url">ou digite: <strong id="join-url">…</strong></p>
+        <p class="join-note">O celular precisa estar no mesmo Wi-Fi deste computador.</p>
+      </section>
+
+      <section class="panel players-panel" aria-labelledby="players-title">
+        <h2 id="players-title">Jogadores <span class="count" id="player-count">0/10</span></h2>
+        <ul class="seats" id="seats"></ul>
+        <p class="start-hint" id="start-hint">Esperando jogadores…</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Partida: palco fixo de 1920 × 1080, escalado para a tela (fitStage) -->
+  <div class="tv-game hidden" id="game-view">
+    <div class="stage" id="stage">
+      <header class="hc-top">
+        <div class="hc-brand">
+          <span class="logo small" aria-hidden="true"><span class="logo-word">TOM</span><span class="logo-and"><i></i>SOBRE<i></i></span><span class="logo-word">TOM</span></span>
+          <span class="hc-round" id="round-label"></span>
+        </div>
+        <div class="hc-cue" id="cue-box">
+          <span class="hc-cue-label" id="cue-label"></span>
+          <span class="hc-cue-words" id="cue-words"></span>
+        </div>
+      </header>
+      <p class="hc-phase" id="phase"></p>
+
+      <!-- O tabuleiro: 30 colunas × 16 linhas, com as letras e os números em volta -->
+      <div class="hc-board" id="board">
+        <div class="hc-labels" id="labels"></div>
+        <div class="hc-grid" id="grid"></div>
+        <div class="hc-layer" id="layer"></div><!-- quadro de pontos, cones, cone flutuando -->
+      </div>
+
+      <aside class="hc-side">
+        <ul class="hc-players" id="players"></ul>
+        <div class="hc-legend" id="legend">
+          <strong>Pontos de cada cone</strong>
+          <span><i class="lg lg-3"></i> na cor certa: <b>3</b></span>
+          <span><i class="lg lg-2"></i> dentro do quadro: <b>2</b></span>
+          <span><i class="lg lg-1"></i> encostado por fora: <b>1</b></span>
+          <small id="legend-giver">Quem dá a dica ganha 1 por cone dentro do quadro.</small>
+        </div>
+      </aside>
+
+      <div class="reveal" id="reveal"></div><!-- carimbos, a carta e o placar final por cima de tudo -->
+    </div>
+  </div>
+
+  <div class="sound-banner hidden" id="sound-banner">🔊 Aperte qualquer tecla para ligar o som</div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando ao servidor…</div>
+
+  <script type="module" src="/tv.js"></script>
+</body>
+</html>

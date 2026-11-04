@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resistência · Sons</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <!-- Para ouvir os sons do jogo pelo PC: /sons (clique em cada um).
+       /sons?conferir=1 grava cada som sem tocar e mede (tools/conferir-sons.mjs). -->
+  <style>
+    .sons { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; display: flex; flex-direction: column; gap: 18px; }
+    .sons h1 { margin: 0; }
+    .sons p { margin: 0; color: var(--text-dim); font-size: 1.1rem; }
+    .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .lista li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 12px 14px 12px 20px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); }
+    .lista strong { display: block; font-size: 1.15rem; }
+    .lista small { color: var(--text-dim); font-size: 0.95rem; }
+    .lista .btn { min-height: 46px; padding: 0 1.2em; font-size: 1rem; }
+    .lista li.tocando { border-color: var(--accent); }
+    #resultado { white-space: pre-wrap; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+  <main class="sons">
+    <h1 class="title">Sons do jogo</h1>
+    <p>Os sons do jogo. Clique para ouvir cada um, ou ouça todos em sequência.</p>
+    <button class="btn" id="todos" type="button">▶ Ouvir todos em sequência</button>
+    <ul class="lista" id="lista"></ul>
+    <pre id="resultado"></pre>
+  </main>
+  <script type="module">
+    import { createSound, SOUND_LIST } from '/sound.js';
+
+    const sound = createSound();
+    const items = SOUND_LIST.map(([name, when, what]) => {
+      const li = document.createElement('li');
+      const text = document.createElement('div');
+      const strong = document.createElement('strong');
+      strong.textContent = when;
+      const small = document.createElement('small');
+      small.textContent = what;
+      text.append(strong, small);
+      const button = document.createElement('button');
+      button.className = 'btn secondary';
+      button.type = 'button';
+      button.textContent = '▶ Ouvir';
+      button.addEventListener('click', () => playOne(name, li));
+      li.append(text, button);
+      document.getElementById('lista').append(li);
+      return { name, li };
+    });
+
+    function playOne(name, li) {
+      sound.unlock();
+      sound.play(name);
+      li.classList.add('tocando');
+      setTimeout(() => li.classList.remove('tocando'), 1500);
+    }
+
+    document.getElementById('todos').addEventListener('click', () => {
+      sound.unlock();
+      items.forEach(({ name, li }, k) => setTimeout(() => playOne(name, li), k * 3400));
+    });
+
+    // Conferência automática: grava cada som num OfflineAudioContext e mede.
+    if (new URLSearchParams(location.search).get('conferir')) {
+      const report = {};
+      for (const [name] of SOUND_LIST) {
+        const rate = 44100;
+        const off = new OfflineAudioContext(1, rate * 5, rate);
+        const s = createSound({ context: off });
+        s.play(name);
+        const data = (await off.startRendering()).getChannelData(0);
+        let peak = 0;
+        let sum = 0;
+        let last = 0;
+        let bad = false;
+        for (let i = 0; i < data.length; i++) {
+          const v = data[i];
+          if (!Number.isFinite(v)) bad = true;
+          const a = Math.abs(v);
+          if (a > peak) peak = a;
+          sum += v * v;
+          if (a > 0.004) last = i;
+        }
+        report[name] = { pico: +peak.toFixed(3), rms: +Math.sqrt(sum / data.length).toFixed(4), duracao: +(last / rate).toFixed(2), erro: bad };
+      }
+      document.getElementById('resultado').textContent = JSON.stringify(report);
+      document.getElementById('resultado').dataset.pronto = '1';
+    }
+  </script>
+</body>
+</html>

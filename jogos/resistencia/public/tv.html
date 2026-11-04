@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resistência · TV</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="tv">
+  <!-- Cenário: a cidade à noite (montado por cenario.js), holofote, névoa e granulado -->
+  <div class="backdrop" aria-hidden="true">
+    <svg class="skyline" id="skyline" preserveAspectRatio="xMidYMax slice"></svg>
+    <div class="searchlight"></div>
+    <div class="fog"></div>
+    <div class="grain"></div>
+  </div>
+
+  <!-- Sala: o cartaz com o QR, os recrutas e as 12 cartas -->
+  <div class="tv-lobby" id="lobby-view">
+    <header class="lobby-head">
+      <h1 class="logo"><span class="logo-x" aria-hidden="true">X</span><span class="logo-word">Resistência</span></h1>
+      <p class="tagline">Mesmas ruas. Mesmo objetivo. <em>Liberdade.</em></p>
+    </header>
+    <main class="lobby-grid">
+      <section class="poster join-card" aria-labelledby="join-title">
+        <span class="tape left" aria-hidden="true"></span><span class="tape right" aria-hidden="true"></span>
+        <h2 id="join-title">Junte-se à Resistência</h2>
+        <div class="qr"><img id="qr" alt="QR code para entrar na sala"></div>
+        <ol class="join-steps">
+          <li>Abra a câmera</li>
+          <li>Aponte para o código</li>
+          <li>Toque no link</li>
+        </ol>
+        <p class="join-url">ou digite: <strong id="join-url">…</strong></p>
+        <p class="join-note">O celular precisa estar no mesmo Wi-Fi deste computador.</p>
+      </section>
+
+      <section class="recruits" aria-labelledby="players-title">
+        <h2 id="players-title">Recrutas <span class="count" id="player-count">0/10</span></h2>
+        <ul class="seats" id="seats"></ul>
+        <p class="start-hint" id="start-hint">Esperando jogadores…</p>
+      </section>
+    </main>
+    <div class="card-fan" id="card-fan" aria-hidden="true"></div>
+    <p class="fan-caption">12 pessoas. 12 histórias. Cada um recebe uma carta na partida.</p>
+  </div>
+
+  <!-- Partida: o tabuleiro (mapa da cidade com as 5 missões) e as cartas de cada um -->
+  <div class="tv-game hidden" id="game-view">
+    <header class="game-top">
+      <h1 class="logo small"><span class="logo-x" aria-hidden="true">X</span><span class="logo-word">Resistência</span></h1>
+      <div class="game-status" id="status"></div>
+      <span class="spy-count" id="round-chip"></span>
+    </header>
+    <section class="board">
+      <div class="map" id="map">
+        <svg class="city" id="city" viewBox="0 0 1500 380" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <div class="missions" id="missions"></div>
+        <div class="reveal" id="reveal"></div>
+      </div>
+      <div class="rejections" id="rejections"></div>
+    </section>
+    <ul class="seats-row" id="table-players"></ul>
+    <p class="ticker" id="ticker"></p>
+  </div>
+
+  <div class="sound-banner hidden" id="sound-banner">🔊 Aperte qualquer tecla para ligar o som</div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando ao servidor…</div>
+
+  <script type="module" src="/tv.js"></script>
+</body>
+</html>

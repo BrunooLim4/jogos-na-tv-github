@@ -1,0 +1,118 @@
+/* TV do Stop: o palco fixo de 1920 × 1080 (escalado para a tela por fitStage) e o LUGAR
+   de cada coisa, na sala e na partida. A cara (o programa de auditório) fica em visual.css. */
+
+body.tv { overflow: hidden; }
+.tv-lobby, .tv-game { position: fixed; inset: 0; background: var(--bg); }
+.stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; }
+
+/* ================================================================ sala */
+
+/* o telão do QR, à esquerda */
+.join-card { position: absolute; left: 60px; top: 60px; width: 530px; height: 960px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 36px; text-align: center; }
+.join-card h2 { margin: 0; font-size: 46px; }
+.qr { width: 400px; height: 400px; padding: 18px; background: #fff; border-radius: 22px; }
+.qr img { display: block; width: 100%; height: 100%; }
+.join-steps { margin: 0; padding-left: 1.3em; text-align: left; font-size: 30px; display: grid; gap: 4px; }
+.join-url { margin: 0; font-size: 26px; }
+.join-note { margin: 0; font-size: 22px; }
+
+/* o letreiro, no alto */
+.sign-box { position: absolute; left: 650px; width: 1210px; top: 64px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+.sign { position: relative; display: grid; place-items: center; width: 720px; height: 210px; margin: 0; font-size: 150px; line-height: 1; }
+.sign-sub { margin: 0; font-size: 34px; }
+
+/* os participantes, nas bancadas (5 × 2) */
+.players-panel { position: absolute; left: 650px; width: 1210px; top: 384px; height: 540px; }
+.players-panel h2 { margin: 0 0 22px; font-size: 38px; }
+.seats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px 24px; }
+.seat { display: flex; flex-direction: column; align-items: center; height: 218px; }
+.seat .avatar { position: relative; z-index: 1; width: 100px; height: 100px; margin-bottom: -22px; font-size: 46px; }
+.seat .desk { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 28px 12px 12px; }
+.seat .name { max-width: 100%; padding: 2px 12px; font-size: 28px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seat .status { font-size: 20px; }
+.start-hint { position: absolute; left: 650px; width: 1210px; top: 950px; height: 74px; display: grid; place-items: center; margin: 0; padding: 0 24px; font-size: 32px; text-align: center; }
+
+/* ================================================================ partida */
+
+/* topo: o nome, a rodada, a letra no meio e o relógio */
+.st-top { position: absolute; left: 40px; right: 40px; top: 24px; height: 170px; display: grid; grid-template-columns: 1fr 190px 1fr; align-items: center; }
+.st-brand { display: flex; flex-direction: column; gap: 4px; }
+.st-title { font-size: 64px; font-weight: 900; letter-spacing: -0.02em; }
+.st-round { font-size: 28px; font-weight: 700; }
+.st-letter { position: relative; display: grid; place-items: center; width: 170px; height: 170px; border-radius: 28px; font-size: 120px; line-height: 1; }
+.st-letter.pop { animation: letter-pop 0.6s cubic-bezier(.2, .9, .3, 1.4); }
+@keyframes letter-pop { from { transform: scale(0.4) rotate(-20deg); } }
+.st-clock { justify-self: end; font-size: 64px; font-variant-numeric: tabular-nums; }
+.st-clock small { display: block; font-size: 22px; text-align: right; }
+
+/* o meio: categorias / respostas / placar */
+.st-main { position: absolute; left: 40px; top: 214px; width: 1290px; height: 790px; display: flex; flex-direction: column; gap: 10px; }
+.st-heading { margin: 0; font-size: 54px; }
+.st-sub { margin: 0; font-size: 28px; }
+.st-board { flex: 1; position: relative; margin-top: 14px; }
+
+.cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.cat { display: grid; place-items: center; height: 150px; padding: 12px; text-align: center; font-size: 30px; }
+.cat.in { animation: cat-in 0.45s cubic-bezier(.2, .9, .3, 1.3) backwards; }
+@keyframes cat-in { from { transform: translateY(30px) scale(0.8); opacity: 0; } }
+
+.answers-tv { display: grid; grid-template-columns: repeat(var(--cols, 5), 1fr); gap: 18px; }
+.ans { position: relative; display: flex; flex-direction: column; gap: 8px; min-height: 170px; padding: 14px 16px; }
+.ans-who { display: flex; align-items: center; gap: 10px; font-size: 24px; }
+.ans-who .avatar { width: 40px; height: 40px; font-size: 20px; }
+.ans-text { font-size: 40px; line-height: 1.1; overflow-wrap: anywhere; }
+.ans.vazio .ans-text, .ans.letra .ans-text { font-size: 30px; }
+.ans.letra .ans-text, .ans.excluida .ans-text { text-decoration: line-through; }
+.ans-votes { position: absolute; right: 12px; top: 12px; padding: 2px 12px; border-radius: 99px; font-size: 24px; }
+.ans-votes:empty { display: none; }
+.ans-points { position: absolute; right: -12px; bottom: -14px; display: grid; place-items: center; min-width: 84px; height: 60px; padding: 0 14px; border-radius: 14px; font-size: 34px; }
+.ans-points.pop { animation: points-pop 0.45s cubic-bezier(.2, .9, .3, 1.5) backwards; }
+@keyframes points-pop { from { transform: scale(0.2) rotate(-20deg); opacity: 0; } }
+
+.round-table { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.round-table li { display: grid; grid-template-columns: 70px 56px 1fr 130px 150px; align-items: center; gap: 16px; height: 66px; padding: 0 12px 0 16px; font-size: 32px; }
+.round-table .gain { text-align: right; }
+.round-table .total { text-align: right; }
+.round-table li.in { animation: cat-in 0.45s ease backwards; }
+
+/* os jogadores (direita): quanto preencheu e os pontos */
+.st-players { position: absolute; right: 40px; top: 214px; width: 520px; height: 790px; padding: 20px 22px; border-radius: 22px; }
+.st-players h3 { margin: 0 0 12px; font-size: 30px; }
+.st-players ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.st-player { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 12px; height: 64px; padding: 0 6px; border-radius: 14px; }
+.st-player .avatar { width: 50px; height: 50px; font-size: 24px; }
+.st-player-who { display: flex; flex-direction: column; min-width: 0; }
+.st-player-name { font-size: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-player-note { font-size: 20px; }
+.st-dots { display: flex; gap: 4px; margin-top: 4px; }
+.st-dots i { width: 16px; height: 8px; border-radius: 4px; }
+.st-score { font-size: 34px; font-variant-numeric: tabular-nums; }
+.st-player.offline { opacity: 0.5; }
+.st-player .gain { margin-left: 6px; font-size: 24px; }
+
+/* a barra do tempo embaixo */
+.st-timebar { position: absolute; left: 40px; right: 40px; bottom: 26px; height: 18px; border-radius: 99px; overflow: hidden; }
+.st-timebar i { display: block; height: 100%; width: 0; transition: width 0.25s linear; }
+
+/* roleta, STOP!, carimbos, confete */
+.reveal { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 10; }
+.reveal > * { grid-area: 1 / 1; }
+.roulette { position: relative; display: grid; place-items: center; width: 420px; height: 420px; border-radius: 70px; font-size: 300px; line-height: 1; }
+.roulette.land { animation: roulette-land 0.5s cubic-bezier(.2, .9, .3, 1.5); }
+@keyframes roulette-land { from { transform: scale(1.35); } }
+.roulette.out { animation: roulette-out 0.5s ease forwards; }
+@keyframes roulette-out { to { transform: translate(0, -420px) scale(0.38); opacity: 0; } }
+.banner { display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: 1500px; padding: 26px 70px 32px; text-align: center; transform: rotate(-3deg); animation: banner-in 0.55s cubic-bezier(.2, .9, .3, 1.25); }
+.banner-title { font-size: 110px; text-transform: uppercase; line-height: 1; }
+.banner-sub { font-size: 36px; }
+.banner.stop .banner-title { font-size: 210px; }
+.banner.out { animation: banner-out 0.45s ease forwards; }
+@keyframes banner-in { from { transform: rotate(-3deg) scale(2.6); opacity: 0; } }
+@keyframes banner-out { to { transform: rotate(-3deg) scale(0.7); opacity: 0; } }
+.countdown { font-size: 300px; line-height: 1; animation: count 1s ease forwards; }
+@keyframes count { from { transform: scale(1.6); opacity: 0; } 30% { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.8); } }
+.rays { width: 1800px; height: 1800px; border-radius: 50%; }
+.rays.out { animation: fade-out 0.45s ease forwards; }
+@keyframes fade-out { to { opacity: 0; } }
+.confetti { position: absolute; inset: 0; overflow: hidden; }
+.confetti i { position: absolute; top: -40px; width: 16px; height: 26px; border-radius: 3px; }

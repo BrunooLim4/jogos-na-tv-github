@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#120e0b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Operação Sombras · Controle</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/oswald.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="phone">
+    <header class="phone-header">
+      <span class="title">Operação Sombras</span>
+      <span class="header-right">
+        <button class="sound-toggle" id="phone-sound" type="button" aria-label="Som do celular">🔔</button>
+        <span class="code-chip">sala <strong id="room-code">…</strong></span>
+      </span>
+    </header>
+
+    <section class="screen center-screen" id="screen-loading">
+      <p>Conectando à sala…</p>
+    </section>
+
+    <!-- Entrar na sala -->
+    <form class="screen hidden" id="screen-join" autocomplete="off">
+      <h1>Entrar na missão</h1>
+      <p class="lead">Escolha seu nome e o seu agente.</p>
+      <div class="field">
+        <label for="name-input">Seu nome</label>
+        <input id="name-input" name="name" maxlength="14" placeholder="Ex.: Bruno" enterkeyhint="done" required>
+      </div>
+      <div class="field">
+        <label id="colors-label">Seu agente</label>
+        <div class="agents" id="colors" role="group" aria-labelledby="colors-label"></div>
+        <p class="agent-picked" id="agent-picked"></p>
+      </div>
+      <p class="form-error hidden" id="join-error" role="alert"></p>
+      <div class="actions">
+        <button class="btn" id="join-button" type="submit" disabled>Entrar na missão</button>
+      </div>
+    </form>
+
+    <!-- Dentro da sala -->
+    <section class="screen hidden" id="screen-room">
+      <div class="panel me-card" id="me-card"></div>
+      <div class="panel team-box" id="team-box">
+        <p class="team-box-title" id="team-title">Seu time</p>
+        <p class="team-box-mates" id="team-mates"></p>
+        <button class="btn secondary" id="switch-team" type="button">Trocar de time</button>
+        <button class="btn secondary" id="chief-button" type="button">Quero ser o chefe</button>
+        <p class="team-box-hint" id="chief-hint">O chefe vê de quem é cada palavra e dá as dicas. Se ninguém pedir, o jogo escolhe.</p>
+      </div>
+      <button class="btn" id="ready-button" type="button">Estou pronto!</button>
+      <div class="panel leader-box hidden" id="leader-box">
+        <button class="btn" id="start-button" type="button" disabled>Começar partida</button>
+        <p id="leader-hint"></p>
+        <button class="btn secondary tv-sound-button" type="button">🔊 Som da TV: ligado</button>
+      </div>
+      <p class="waiting-leader hidden" id="waiting-leader"></p>
+      <div class="others">
+        <h2 id="others-title">Na sala</h2>
+        <ul id="others-list"></ul>
+      </div>
+      <div class="actions">
+        <button class="link-button" id="leave-button" type="button">Sair da sala</button>
+      </div>
+    </section>
+
+    <!-- Partida -->
+    <section class="screen hidden" id="screen-game">
+      <div class="turn-banner" id="turn-banner"></div>
+      <p class="tab-help" id="game-help"></p>
+      <div class="word-grid" id="word-grid"></div>
+
+      <!-- Chefe: dar a dica -->
+      <form class="panel clue-form hidden" id="clue-form" autocomplete="off">
+        <label for="clue-input">Sua dica (uma palavra)</label>
+        <input id="clue-input" maxlength="20" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Ex.: MAR">
+        <p class="clue-numbers-label">Quantas palavras ela lembra?</p>
+        <div class="clue-numbers" id="clue-numbers"></div>
+        <button class="btn" id="clue-button" type="submit" disabled>Dar a dica</button>
+      </form>
+
+      <!-- Quem adivinha: revelar ou passar -->
+      <div class="guess-actions hidden" id="guess-actions">
+        <button class="btn" id="reveal-button" type="button" disabled>Toque numa palavra</button>
+        <button class="btn secondary" id="pass-button" type="button">Passar a vez</button>
+      </div>
+
+      <div class="actions">
+        <button class="btn hidden" id="rematch-button" type="button">Jogar de novo (mesmos times)</button>
+        <button class="btn secondary hidden" id="skip-button" type="button">Pular quem está desconectado</button>
+        <button class="btn secondary tv-sound-button hidden" id="game-tv-sound" type="button">🔊 Som da TV: ligado</button>
+        <button class="link-button hidden" id="end-game-button" type="button">Encerrar partida (líder)</button>
+      </div>
+    </section>
+
+    <!-- Mensagens (sala não existe, cheia, removido...) -->
+    <section class="screen center-screen hidden" id="screen-message">
+      <h1 id="message-title"></h1>
+      <p id="message-text"></p>
+      <button class="btn secondary" id="message-button" type="button">Tentar de novo</button>
+    </section>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando…</div>
+
+  <script type="module" src="/phone.js"></script>
+</body>
+</html>

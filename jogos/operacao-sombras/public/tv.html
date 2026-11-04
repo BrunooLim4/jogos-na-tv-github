@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operação Sombras · TV</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/oswald.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Sala: um time de cada lado e, no meio, o dossiê com o QR code -->
+  <div class="tv-lobby" id="lobby-view">
+    <header class="lobby-head">
+      <p class="kicker">Arquivo confidencial</p>
+      <h1 class="title">Operação Sombras</h1>
+    </header>
+    <main class="lobby-grid">
+      <section class="lobby-team" data-team="vermelho" aria-label="Time Vermelho">
+        <h2 class="team-head">Time Vermelho</h2>
+        <ul class="seats" id="seats-vermelho"></ul>
+      </section>
+
+      <section class="dossier" aria-labelledby="join-title">
+        <span class="dossier-tab">Missão: entrar</span>
+        <span class="stamp">Confidencial</span>
+        <h2 id="join-title">Entre pelo celular</h2>
+        <div class="qr"><img id="qr" alt="QR code para entrar na sala"></div>
+        <ol class="join-steps">
+          <li>Abra a câmera</li>
+          <li>Aponte para o código</li>
+          <li>Toque no link</li>
+        </ol>
+        <p class="join-url">ou digite: <strong id="join-url">…</strong></p>
+        <p class="join-note">O celular precisa estar no mesmo Wi-Fi deste computador.</p>
+      </section>
+
+      <section class="lobby-team" data-team="azul" aria-label="Time Azul">
+        <h2 class="team-head">Time Azul</h2>
+        <ul class="seats" id="seats-azul"></ul>
+      </section>
+    </main>
+    <footer class="lobby-foot">
+      <span class="count" id="player-count">0/8 agentes</span>
+      <p class="start-hint" id="start-hint">Esperando jogadores…</p>
+    </footer>
+  </div>
+
+  <!-- Partida: as 25 palavras no meio, um time de cada lado -->
+  <div class="tv-game hidden" id="game-view">
+    <header class="game-top">
+      <div class="game-brand">
+        <p class="kicker">Arquivo confidencial</p>
+        <h1 class="title">Operação Sombras</h1>
+      </div>
+      <div class="game-status" id="status"></div>
+      <span class="round-chip" id="round-chip"></span>
+    </header>
+    <main class="game-main">
+      <aside class="team-panel" data-team="vermelho" id="panel-vermelho"></aside>
+      <div class="board" id="board"></div>
+      <aside class="team-panel" data-team="azul" id="panel-azul"></aside>
+    </main>
+    <ul class="events" id="events"></ul>
+  </div>
+
+  <div class="sound-banner hidden" id="sound-banner">🔊 Aperte qualquer tecla para ligar o som</div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando ao servidor…</div>
+
+  <script type="module" src="/tv.js"></script>
+</body>
+</html>

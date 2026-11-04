@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lobisomem · TV</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/tv.css">
+</head>
+<body class="tv">
+  <!-- Palco fixo de 1920 × 1080, escalado para a tela (fitStage) -->
+  <div class="stage" id="stage">
+    <svg class="scene" id="scene" aria-hidden="true"></svg>
+
+    <!-- Sala: o logo com a lua, o QR, os jogadores e as cartas em leque -->
+    <section class="lobby" id="lobby-view">
+      <header class="lobby-logo">
+        <span class="logo-moon"></span>
+        <h1 class="logo-word">Lobisomem</h1>
+        <p class="logo-sub">uma noite na vila</p>
+      </header>
+      <section class="board join-card" aria-labelledby="join-title">
+        <h2 id="join-title">Entre pelo celular</h2>
+        <div class="qr"><img id="qr" alt="QR code para entrar na sala"></div>
+        <ol class="join-steps">
+          <li>Abra a câmera</li>
+          <li>Aponte para o código</li>
+          <li>Toque no link</li>
+        </ol>
+        <p class="join-url">ou digite: <strong id="join-url">…</strong></p>
+        <p class="join-note">O celular precisa estar no mesmo Wi-Fi deste computador.</p>
+      </section>
+      <div class="lobby-fan" id="lobby-fan" aria-hidden="true"></div>
+      <p class="lobby-pitch">Cada um recebe um personagem secreto.<br>À noite, todos agem pelo celular. De dia, descubram o lobisomem!</p>
+      <section class="board players-panel" aria-labelledby="players-title">
+        <h2 id="players-title">Jogadores <span class="count" id="player-count">0/10</span></h2>
+        <ul class="seats" id="seats"></ul>
+        <p class="start-hint" id="start-hint">Esperando jogadores…</p>
+      </section>
+    </section>
+
+    <!-- Partida -->
+    <section class="table hidden" id="game-view">
+      <header class="top">
+        <div class="top-logo"><span class="logo-word">Lobisomem</span><span class="top-match" id="match-label"></span></div>
+        <div class="phase"><h2 id="phase-title"></h2><p id="phase-sub"></p></div>
+        <div class="clock" id="clock"></div>
+      </header>
+
+      <aside class="board side left" id="side-left"></aside>
+      <div class="middle" id="middle">
+        <span class="middle-label">O meio da mesa</span>
+        <div class="middle-cards" id="middle-cards"></div>
+      </div>
+      <aside class="board side right" id="side-right"></aside>
+
+      <div class="inplay" id="inplay">
+        <span class="inplay-label" id="inplay-label">Cartas nesta partida</span>
+        <div class="inplay-cards" id="inplay-cards"></div>
+      </div>
+
+      <svg class="arcs" id="arcs" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+      <ol class="seats-row" id="seats-row"></ol>
+      <div class="deck hidden" id="deck"></div>
+      <div class="reveal" id="reveal"></div><!-- carimbos e o resultado, por cima da mesa -->
+    </section>
+  </div>
+
+  <div class="sound-banner hidden" id="sound-banner">🔊 Aperte qualquer tecla para ligar o som</div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando ao servidor…</div>
+
+  <script type="module" src="/tv.js"></script>
+</body>
+</html>

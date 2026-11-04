@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d141b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Trilhos a Vapor · Controle</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="phone">
+    <header class="phone-header">
+      <span class="brand scroll">Trilhos a Vapor</span>
+      <span class="header-right">
+        <button class="sound-toggle" id="phone-sound" type="button" aria-label="Som do celular">🔔</button>
+        <span class="code-chip">sala <strong id="room-code">…</strong></span>
+      </span>
+    </header>
+
+    <!-- Carregando -->
+    <section class="screen center-screen" id="screen-loading">
+      <p>Conectando à sala…</p>
+    </section>
+
+    <!-- Entrar na sala -->
+    <form class="screen hidden" id="screen-join" autocomplete="off">
+      <h1>Entrar na sala</h1>
+      <p class="lead">Escolha seu nome e o seu personagem.</p>
+
+      <div class="field">
+        <label for="name-input">Seu nome</label>
+        <input id="name-input" name="name" maxlength="14" placeholder="Ex.: Bruno" enterkeyhint="done" required>
+      </div>
+
+      <div class="field">
+        <label id="colors-label">Seu personagem</label>
+        <div class="colors" id="colors" role="group" aria-labelledby="colors-label"></div>
+        <div class="character-card" id="character-card"></div>
+      </div>
+
+      <p class="form-error hidden" id="join-error" role="alert"></p>
+
+      <div class="actions">
+        <button class="btn" id="join-button" type="submit" disabled>Entrar na sala</button>
+      </div>
+    </form>
+
+    <!-- Dentro da sala -->
+    <section class="screen hidden" id="screen-room">
+      <div class="metal me-card" id="me-card">
+        <img class="portrait" id="me-portrait" alt="">
+        <p class="me-name" id="me-name"></p>
+        <p class="me-color" id="me-color"></p>
+        <img class="train-art" id="me-train" alt="">
+      </div>
+
+      <button class="btn" id="ready-button" type="button">Estou pronto!</button>
+
+      <div class="metal leader-box hidden" id="leader-box">
+        <button class="btn" id="start-button" type="button" disabled>Começar partida</button>
+        <p id="leader-hint"></p>
+        <button class="btn secondary tv-sound-button" type="button">🔊 Som da TV: ligado</button>
+      </div>
+      <p class="waiting-leader hidden" id="waiting-leader"></p>
+
+      <div class="others">
+        <h2 id="others-title">Na sala</h2>
+        <ul id="others-list"></ul>
+      </div>
+
+      <div class="actions">
+        <button class="link-button" id="leave-button" type="button">Sair da sala</button>
+      </div>
+    </section>
+
+    <!-- Partida -->
+    <section class="screen hidden" id="screen-game">
+      <div class="turn-banner" id="turn-banner"></div>
+      <div class="my-stats" id="my-stats"></div>
+
+      <div class="tabs" id="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="cards"><span class="tab-icon">🃏</span>Pegar cartas</button>
+        <button type="button" role="tab" data-tab="routes"><span class="tab-icon">🚂</span>Colocar trens</button>
+        <button type="button" role="tab" data-tab="tickets"><span class="tab-icon">🎫</span>Bilhetes</button>
+      </div>
+      <p class="tab-help" id="tab-help"></p>
+
+      <div class="tab-panel" id="panel-cards" role="tabpanel">
+        <div class="phone-section">
+          <h2><span>Cartas na mesa</span><span id="draw-count"></span></h2>
+          <div class="phone-faceup" id="phone-faceup"></div>
+          <p class="pick-hint" id="pick-hint"></p>
+        </div>
+      </div>
+
+      <div class="tab-panel hidden" id="panel-routes" role="tabpanel">
+        <div class="route-groups" id="route-groups"></div>
+        <button class="btn secondary" id="pick-open" type="button">🗺️ Escolher qualquer rota no mapa</button>
+      </div>
+
+      <div class="tab-panel hidden" id="panel-tickets" role="tabpanel">
+        <button class="btn" id="draw-tickets-button" type="button">Pegar 3 bilhetes novos</button>
+        <p class="pick-hint" id="tickets-hint"></p>
+      </div>
+
+      <div class="phone-section">
+        <h2><span>Seus bilhetes</span><span id="tickets-total"></span></h2>
+        <ul class="my-tickets" id="my-tickets"></ul>
+      </div>
+
+      <div class="phone-section">
+        <h2><span>Suas cartas</span><span id="hand-total"></span></h2>
+        <div class="hand" id="hand"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn secondary hidden" id="skip-button" type="button">Pular quem está desconectado</button>
+        <button class="btn secondary tv-sound-button hidden" id="game-tv-sound" type="button">🔊 Som da TV: ligado</button>
+        <button class="link-button hidden" id="end-game-button" type="button">Encerrar partida (líder)</button>
+      </div>
+    </section>
+
+    <!-- Fim de jogo -->
+    <section class="screen hidden" id="screen-finished">
+      <div class="metal final-card" id="final-card"></div>
+      <ul class="my-tickets" id="final-tickets"></ul>
+      <div class="actions">
+        <button class="btn hidden" id="back-lobby-button" type="button">Voltar todos para a sala</button>
+        <p class="waiting-leader hidden" id="final-wait">O líder volta todos para a sala.</p>
+      </div>
+    </section>
+
+    <!-- Mensagens (sala não existe, cheia, removido...) -->
+    <section class="screen center-screen hidden" id="screen-message">
+      <div class="big" aria-hidden="true">🚉</div>
+      <h1 id="message-title"></h1>
+      <p id="message-text"></p>
+      <button class="btn secondary" id="message-button" type="button">Tentar de novo</button>
+    </section>
+  </div>
+
+  <!-- Escolher bilhetes de destino -->
+  <div class="sheet hidden" id="tickets-sheet" role="dialog" aria-modal="true" aria-labelledby="tickets-sheet-title">
+    <div class="sheet-body">
+      <h2 id="tickets-sheet-title">Escolha seus bilhetes</h2>
+      <p class="sheet-hint" id="tickets-sheet-hint"></p>
+      <div class="ticket-choices" id="ticket-choices"></div>
+      <button class="btn" id="tickets-confirm" type="button">Confirmar</button>
+    </div>
+  </div>
+
+  <!-- Colocar trens numa rota (confirmação com o mapa) -->
+  <div class="sheet hidden" id="pay-sheet" role="dialog" aria-modal="true" aria-labelledby="pay-title">
+    <div class="sheet-body">
+      <h2 id="pay-title">Colocar trens aqui?</h2>
+      <p class="pay-route" id="pay-route"></p>
+      <div class="sheet-map" id="pay-map"></div>
+      <div class="pay-summary">
+        <div>
+          <span class="pay-caption">Você paga</span>
+          <div class="pay-cards" id="pay-cards"></div>
+        </div>
+        <div class="pay-gain" id="pay-gain"></div>
+      </div>
+      <div class="pay-alternatives" id="pay-alternatives"></div>
+      <button class="btn" id="pay-confirm" type="button">Colocar trens</button>
+      <button class="link-button" id="pay-cancel" type="button">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Escolher qualquer rota tocando no mapa -->
+  <div class="sheet hidden" id="pick-sheet" role="dialog" aria-modal="true" aria-labelledby="pick-title">
+    <div class="sheet-body">
+      <h2 id="pick-title">Toque numa rota do mapa</h2>
+      <p class="sheet-hint">Arraste para ver o mapa todo. As rotas com contorno claro são as que você consegue pagar agora.</p>
+      <div class="pick-map" id="pick-map"></div>
+      <div class="pick-info" id="pick-info"></div>
+      <button class="btn" id="pick-confirm" type="button" disabled>Escolha uma rota</button>
+      <button class="link-button" id="pick-close" type="button">Fechar</button>
+    </div>
+  </div>
+
+  <!-- Ver um bilhete no mapa -->
+  <div class="sheet hidden" id="map-sheet" role="dialog" aria-modal="true" aria-labelledby="map-title">
+    <div class="sheet-body">
+      <h2 id="map-title"></h2>
+      <div class="sheet-map" id="sheet-map"></div>
+      <p class="sheet-hint" id="map-hint"></p>
+      <button class="btn secondary" id="map-close" type="button">Fechar</button>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando…</div>
+
+  <script type="module" src="/phone.js"></script>
+</body>
+</html>

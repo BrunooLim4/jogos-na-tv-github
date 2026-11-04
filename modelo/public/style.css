@@ -1,0 +1,204 @@
+/* ESTILO PADRÃO — o visual neutro com que todo jogo novo começa.
+   Limpo, legível do sofá e sem personalidade de propósito: fonte do sistema,
+   cinza-azulado, um azul de destaque. A identidade do jogo (cores, fontes,
+   proporções, personagens, layout da sala) vem DEPOIS, com as artes do Bruno,
+   e substitui este arquivo — nunca copiar o visual de outro jogo. */
+
+:root {
+  --bg: #15171c;
+  --panel: #20232b;
+  --panel-2: #2a2e38;
+  --line: #3a3f4b;
+  --text: #f2f3f5;
+  --text-dim: #a3a8b3;
+  --accent: #4f8cff;
+  --accent-ink: #ffffff;
+  --good: #4cc38a;
+  --warn: #f0a24a;
+  --danger: #e5534b;
+  --radius: 16px;
+  --font: system-ui, "Segoe UI", -apple-system, Roboto, Arial, sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+.hidden { display: none !important; }
+
+/* Cor de cada jogador (data-color="azul" etc.) */
+[data-color="azul"]     { --player: #3b82f6; }
+[data-color="verde"]    { --player: #22c55e; }
+[data-color="vermelho"] { --player: #ef4444; }
+[data-color="roxo"]     { --player: #a855f7; }
+[data-color="amarelo"]  { --player: #eab308; }
+[data-color="laranja"]  { --player: #f97316; }
+
+/* Bolinha do jogador: a cor e a inicial */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--player, var(--line));
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.title { margin: 0; font-weight: 800; letter-spacing: -0.01em; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 1.4em;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn.secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); }
+.btn.ready-on { background: var(--good); color: #062014; }
+
+.status { font-weight: 700; white-space: nowrap; }
+.status.ready { color: var(--good); }
+.status.waiting { color: var(--text-dim); }
+.status.offline { color: var(--warn); }
+
+.conn-banner, .sound-banner {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.6em 1.2em;
+  border-radius: 999px;
+  font-weight: 700;
+  z-index: 20;
+}
+.conn-banner { top: 16px; background: var(--warn); color: #1f1300; }
+.sound-banner { bottom: 18px; background: var(--panel-2); border: 1px solid var(--line); }
+
+/* ================================================================ TV: sala */
+
+.tv-lobby { min-height: 100vh; display: flex; flex-direction: column; gap: 28px; padding: 40px 56px; }
+.tv-lobby .title { font-size: clamp(2.4rem, 3.6vw, 3.6rem); }
+.lobby-grid { flex: 1; display: grid; grid-template-columns: minmax(320px, 0.8fr) minmax(0, 1.2fr); gap: 32px; }
+.join-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px; text-align: center; }
+.join-card h2 { margin: 0; font-size: 1.8rem; }
+.qr { width: min(100%, 380px); aspect-ratio: 1; padding: 14px; background: #fff; border-radius: 16px; }
+.qr img { display: block; width: 100%; height: 100%; }
+.join-steps { margin: 0; padding-left: 1.4em; text-align: left; font-size: 1.2rem; display: grid; gap: 6px; }
+.join-url { margin: 0; color: var(--text-dim); font-size: 1.1rem; }
+.join-url strong { color: var(--text); font-family: ui-monospace, Consolas, monospace; }
+.join-note { margin: 0; color: var(--text-dim); }
+
+.players-panel { display: flex; flex-direction: column; gap: 16px; padding: 32px; }
+.players-panel h2 { margin: 0; font-size: 1.8rem; }
+.players-panel .count { color: var(--text-dim); font-weight: 600; }
+.seats { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.seat { display: flex; align-items: center; gap: 16px; min-height: 76px; padding: 10px 20px 10px 12px; border-radius: 14px; background: var(--panel-2); }
+.seat .name { flex: 1; font-size: 1.5rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seat.free { opacity: 0.45; }
+.seat.free .name { font-weight: 500; }
+.seat.offline { opacity: 0.6; }
+.seat .status { font-size: 1.15rem; }
+.start-hint { margin: auto 0 0; color: var(--text-dim); font-size: 1.3rem; }
+
+/* ================================================================ TV: partida */
+
+.tv-game { height: 100vh; display: flex; flex-direction: column; gap: 20px; padding: 24px 32px; }
+.game-top { display: flex; align-items: center; gap: 24px; }
+.game-top .title { font-size: 2rem; }
+.round-chip { margin-left: auto; color: var(--text-dim); font-size: 1.4rem; font-weight: 700; }
+.players-row { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.player-chip { display: flex; align-items: center; gap: 12px; padding: 8px 18px 8px 8px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); }
+.player-chip.offline { opacity: 0.5; }
+.player-chip .chip-name { font-weight: 700; font-size: 1.2rem; }
+.player-chip .score { font-weight: 800; font-size: 1.4rem; color: var(--accent); }
+.table-placeholder { position: relative; flex: 1; display: grid; place-items: center; border: 2px dashed var(--line); border-radius: var(--radius); color: var(--text-dim); font-size: 1.6rem; text-align: center; padding: 24px; }
+.events { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; color: var(--text-dim); font-size: 1.15rem; }
+
+/* Revelações por cima da mesa (padrão Resistência). O carimbo entra batendo
+   (grande → tamanho certo, girado), fica e sai. Na personalidade do jogo, cada
+   revelação ganha a sua cara (cartas virando, fichas caindo, onda de choque...). */
+.reveal { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.reveal > * { grid-area: 1 / 1; }
+.banner { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 40px 18px; border: 5px solid var(--accent); border-radius: 12px; background: rgba(10, 12, 16, 0.92); color: var(--text); transform: rotate(-4deg); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); animation: banner-in 0.55s cubic-bezier(.2, .9, .3, 1.25); }
+.banner-title { font-size: 3.4rem; font-weight: 800; text-transform: uppercase; color: var(--accent); }
+.banner-sub { font-size: 1.3rem; font-weight: 700; color: var(--text-dim); }
+.banner.out { animation: banner-out 0.45s ease forwards; }
+@keyframes banner-in { from { transform: rotate(-4deg) scale(2.6); opacity: 0; } }
+@keyframes banner-out { to { transform: rotate(-4deg) scale(0.7); opacity: 0; } }
+/* "drop": uma ficha cai de cima, quica e assenta (reinicie com restartAnimation) */
+.drop { animation: drop 0.55s cubic-bezier(.3, .8, .3, 1.35); }
+@keyframes drop { from { transform: translateY(-60px) scale(1.8) rotate(-30deg); opacity: 0; } }
+.events li:last-child { color: var(--text); font-weight: 700; }
+
+/* ================================================================ Celular */
+
+.phone { max-width: 480px; min-height: 100vh; min-height: 100dvh; margin: 0 auto; padding: 14px 16px calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 16px; }
+.phone-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.phone-header .title { font-size: 1.4rem; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.code-chip { padding: 0.35em 0.9em; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--text-dim); font-size: 0.85rem; }
+.code-chip strong { color: var(--text); }
+.sound-toggle { min-height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); cursor: pointer; }
+
+.screen { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+.screen h1 { margin: 0.2rem 0 0; font-size: 1.7rem; }
+.screen .lead { margin: -0.6rem 0 0; color: var(--text-dim); }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label { font-weight: 700; }
+.field input { min-height: 54px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--text); font: inherit; font-size: 1.15rem; }
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.colors { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.color-option { aspect-ratio: 1; border: 0; border-radius: 50%; background: var(--player); cursor: pointer; }
+.color-option[aria-pressed="true"] { outline: 3px solid #fff; outline-offset: 3px; }
+.color-option:disabled { opacity: 0.2; cursor: not-allowed; }
+
+.phone .btn { width: 100%; min-height: 58px; }
+.phone .actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+.form-error { margin: 0; padding: 0.8em 1em; border-radius: 12px; background: rgba(229, 83, 75, 0.2); color: #ffd1ce; }
+
+.me-card { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 22px 16px; text-align: center; }
+.me-card .avatar { width: 96px; height: 96px; font-size: 2.6rem; }
+.me-card .me-name { margin: 0; font-size: 1.6rem; font-weight: 800; }
+.me-card .me-color { margin: 0; color: var(--text-dim); }
+.leader-box { display: flex; flex-direction: column; gap: 10px; padding: 16px; }
+.leader-box p, .waiting-leader { margin: 0; color: var(--text-dim); text-align: center; }
+
+.others { display: flex; flex-direction: column; gap: 8px; }
+.others h2 { margin: 0; font-size: 1.05rem; color: var(--text-dim); }
+.others ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.others li { display: flex; align-items: center; gap: 12px; padding: 6px 12px 6px 6px; border-radius: 12px; background: var(--panel); }
+.others li .avatar { width: 40px; height: 40px; font-size: 1.1rem; }
+.others li .who { flex: 1; font-weight: 700; }
+.others li .kick-player { width: 32px; height: 32px; border: 0; border-radius: 50%; background: var(--panel-2); color: var(--text-dim); cursor: pointer; }
+
+.link-button { align-self: center; padding: 10px; border: 0; background: none; color: var(--text-dim); text-decoration: underline; cursor: pointer; }
+.center-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; }
+.center-screen p { margin: 0; color: var(--text-dim); }
+
+.turn-banner { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); font-size: 1.25rem; font-weight: 800; }
+.turn-banner small { color: var(--text-dim); font-size: 0.9rem; font-weight: 600; }
+.tab-help { margin: 0; color: var(--text-dim); }
+
+@keyframes your-turn { 50% { box-shadow: inset 0 0 0 8px var(--accent); } }
+body.your-turn-flash { animation: your-turn 0.45s ease-in-out 3; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%); max-width: calc(100vw - 32px); padding: 10px 18px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); font-weight: 700; z-index: 30; }
+.toast.error { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+@media (max-width: 860px) { .lobby-grid { grid-template-columns: 1fr; } }

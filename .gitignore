@@ -1,0 +1,8 @@
+node_modules/
+jogos/*/fotos/
+modelo/fotos/
+__pycache__/
+*.log
+desktop.ini
+Thumbs.db
+.DS_Store

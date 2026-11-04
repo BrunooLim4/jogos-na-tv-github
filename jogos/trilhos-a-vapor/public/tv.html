@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trilhos a Vapor · TV</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Cenário vivo (padrão Resistência): estação a vapor ao entardecer — cenario.js -->
+  <div class="tv-backdrop" aria-hidden="true">
+    <div class="bd-sky"></div>
+    <div class="bd-lamp l1"></div>
+    <div class="bd-lamp l2"></div>
+    <div id="bd-gears"></div>
+    <img class="bd-airship" src="/img/v-vermelho.webp" alt="">
+    <div id="bd-steam"></div>
+    <div class="bd-grain"></div>
+  </div>
+
+  <!-- Sala: QR code e jogadores entrando -->
+  <div class="tv" id="lobby-view">
+    <header class="tv-header">
+      <h1 class="brand scroll">Trilhos a Vapor</h1>
+      <span class="subtitle">Sala de jogo</span>
+      <span class="badge">protótipo</span>
+    </header>
+
+    <main class="tv-grid">
+      <section class="panel join-card" aria-labelledby="join-title">
+        <h2 id="join-title" class="plate">Entre pelo celular</h2>
+        <div class="qr"><img id="qr" alt="QR code para entrar na sala"></div>
+        <ol class="join-steps">
+          <li>Abra a câmera</li>
+          <li>Aponte para o código</li>
+          <li>Toque no link</li>
+        </ol>
+        <p class="join-url">ou digite: <strong id="join-url">…</strong></p>
+        <p class="join-note">O celular precisa estar no mesmo Wi-Fi deste computador.</p>
+      </section>
+
+      <section class="panel players-panel" aria-labelledby="players-title">
+        <h2 id="players-title">Jogadores <span class="count" id="player-count">0/5</span></h2>
+        <ul class="seats" id="seats"></ul>
+        <div class="start-row">
+          <p class="start-hint" id="start-hint">Esperando jogadores…</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Partida: mapa, mesa e os cartões dos jogadores -->
+  <div class="tv-game hidden" id="game-view">
+    <header class="game-header">
+      <h1 class="brand scroll">Trilhos a Vapor</h1>
+      <div class="game-status" id="game-status"></div>
+      <div class="round-chip" id="last-round">Última rodada!</div>
+    </header>
+
+    <div class="game-body">
+      <div class="board">
+        <div class="map-wrap" id="map-wrap"></div>
+        <!-- revelações por cima do mapa: carimbos e a contagem final -->
+        <div class="map-reveal" id="map-reveal"></div>
+      </div>
+
+      <aside class="game-side">
+        <section class="side-block market-block">
+          <h3>Cartas na mesa</h3>
+          <div class="tv-faceup" id="tv-faceup"></div>
+          <p class="ticket-deck" id="ticket-deck"></p>
+        </section>
+        <ul class="tv-plates" id="tv-players"></ul>
+      </aside>
+    </div>
+    <p class="tv-ticker" id="tv-ticker"></p>
+  </div>
+
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <div class="sound-banner hidden" id="sound-banner">🔊 Aperte qualquer tecla para ligar o som</div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando ao servidor…</div>
+
+  <script type="module" src="/tv.js"></script>
+</body>
+</html>

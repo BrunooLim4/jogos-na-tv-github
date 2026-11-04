@@ -1,0 +1,263 @@
+<!doctype html>
+<!--
+  Ferramenta (não é parte do jogo): procura o melhor lugar para o nome de cada
+  cidade — sem cobrir trilho, outro nome ou cidade, e sem a linha fininha até o
+  ponto cruzar trilho. Também lista trilhos que ficam em cima de outros trilhos.
+  Uso: copie para public/, sirva a pasta (ex.: python -m http.server 3003 dentro
+  de public) e abra /otimizar-nomes.html. O JSON aparece embaixo do mapa; grave
+  com tools/gravar-posicoes-nomes.py. Depois apague a cópia de public/.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/style.css">
+<style>#wrap { width: 1600px; }</style>
+</head>
+<body>
+<div id="wrap"></div>
+<pre id="out">calculando…</pre>
+<script type="module">
+// 1) Lista trilhos que ficam em cima de outros trilhos.
+// 2) Procura, para cada cidade, a posição do nome em que nem a plaquinha nem a
+//    linha até o ponto passam por cima de trilhos, outros nomes ou cidades.
+import { createMap, leaderEnds, splitName } from '/map-view.js';
+import { CITIES, MAP_SIZE, SPREAD } from '/map-usa.js';
+
+const PLATE_H = 22;
+const PAD_X = 7;
+const DOT_R = 13;
+const AREA = [-1, -1, MAP_SIZE.width + 1, MAP_SIZE.height + 1];
+const DECOS = [[-2, MAP_SIZE.height - 118, 222, 130], [Math.round(980 * SPREAD) - 46, MAP_SIZE.height - 90, 92, 92]];
+
+const svg = createMap();
+document.getElementById('wrap').append(svg);
+await document.fonts.ready;
+await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+// largura do nome em 1 linha e em 2 linhas (a maior das duas)
+const width = {};
+const width2 = {};
+const probe = svg.querySelector('.city text');
+const measure = text => { const t = probe.cloneNode(); t.textContent = text; probe.parentNode.append(t); const w = t.getComputedTextLength(); t.remove(); return w; };
+for (const [id, c] of Object.entries(CITIES)) {
+  width[id] = measure(c.name);
+  const parts = splitName(c.name);
+  if (parts.length === 2) width2[id] = Math.max(...parts.map(measure));
+}
+
+// ---- vagões como polígonos
+function carPolys(pad) {
+  const list = [];
+  for (const group of svg.querySelectorAll('.route')) {
+    for (const car of group.querySelectorAll('.car')) {
+      const m = car.transform.baseVal.consolidate().matrix;
+      const slot = car.querySelector('.slot');
+      const w = Number(slot.getAttribute('width')) + pad * 2;
+      const h = Number(slot.getAttribute('height')) + pad * 2;
+      const pts = [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]]
+        .map(([x, y]) => [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f]);
+      const xs = pts.map(p => p[0]); const ys = pts.map(p => p[1]);
+      const route = group.dataset.route;
+      list.push({ route, link: route.replace(/-\d$/, ''), pts, box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)] });
+    }
+  }
+  return list;
+}
+
+// ---- 1) trilho em cima de trilho (teste dos eixos separadores)
+function overlapDepth(a, b) {
+  let depth = Infinity;
+  for (const poly of [a, b]) {
+    for (let i = 0; i < 2; i++) {
+      const [x1, y1] = poly[i]; const [x2, y2] = poly[i + 1];
+      const nx = -(y2 - y1); const ny = x2 - x1; const len = Math.hypot(nx, ny);
+      const ax = nx / len; const ay = ny / len;
+      const pa = a.map(([x, y]) => x * ax + y * ay); const pb = b.map(([x, y]) => x * ax + y * ay);
+      const d = Math.min(Math.max(...pa), Math.max(...pb)) - Math.max(Math.min(...pa), Math.min(...pb));
+      if (d <= 0) return 0;
+      depth = Math.min(depth, d);
+    }
+  }
+  return depth;
+}
+const rawCars = carPolys(0);
+const carClashes = new Map();
+for (let i = 0; i < rawCars.length; i++) {
+  for (let j = i + 1; j < rawCars.length; j++) {
+    const a = rawCars[i]; const b = rawCars[j];
+    if (a.route === b.route) continue;
+    if (a.box[2] < b.box[0] || b.box[2] < a.box[0] || a.box[3] < b.box[1] || b.box[3] < a.box[1]) continue;
+    const d = overlapDepth(a.pts, b.pts);
+    if (d > 0.3) {
+      const key = [a.route, b.route].sort().join(' x ');
+      carClashes.set(key, Math.max(carClashes.get(key) ?? 0, Math.round(d * 10) / 10));
+    }
+  }
+}
+
+// ---- 2) nomes
+const cars = carPolys(1.5);
+function polyArea(pts) {
+  let a = 0;
+  for (let i = 0; i < pts.length; i++) { const [x1, y1] = pts[i]; const [x2, y2] = pts[(i + 1) % pts.length]; a += x1 * y2 - x2 * y1; }
+  return Math.abs(a) / 2;
+}
+function clipArea(pts, [x0, y0, x1, y1]) {
+  const tests = [
+    [p => p[0] >= x0, (a, b) => { const t = (x0 - a[0]) / (b[0] - a[0]); return [x0, a[1] + t * (b[1] - a[1])]; }],
+    [p => p[0] <= x1, (a, b) => { const t = (x1 - a[0]) / (b[0] - a[0]); return [x1, a[1] + t * (b[1] - a[1])]; }],
+    [p => p[1] >= y0, (a, b) => { const t = (y0 - a[1]) / (b[1] - a[1]); return [a[0] + t * (b[0] - a[0]), y0]; }],
+    [p => p[1] <= y1, (a, b) => { const t = (y1 - a[1]) / (b[1] - a[1]); return [a[0] + t * (b[0] - a[0]), y1]; }],
+  ];
+  let poly = pts;
+  for (const [inside, cut] of tests) {
+    if (!poly.length) break;
+    const out = [];
+    for (let i = 0; i < poly.length; i++) {
+      const a = poly[i]; const b = poly[(i + 1) % poly.length];
+      if (inside(a)) out.push(a);
+      if (inside(a) !== inside(b)) out.push(cut(a, b));
+    }
+    poly = out;
+  }
+  return poly.length > 2 ? polyArea(poly) : 0;
+}
+const boxOverlap = (a, b) => Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])) * Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+function segsCross(p1, p2, q1, q2) {
+  const d1 = cross(q1, q2, p1); const d2 = cross(q1, q2, p2); const d3 = cross(p1, p2, q1); const d4 = cross(p1, p2, q2);
+  return ((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0));
+}
+function insideConvex(p, poly) {
+  let sign = 0;
+  for (let i = 0; i < poly.length; i++) {
+    const c = cross(poly[i], poly[(i + 1) % poly.length], p);
+    if (c === 0) continue;
+    if (sign === 0) sign = Math.sign(c); else if (Math.sign(c) !== sign) return false;
+  }
+  return true;
+}
+function segHitsPoly(a, b, poly) {
+  if (insideConvex(a, poly) || insideConvex(b, poly)) return true;
+  for (let i = 0; i < poly.length; i++) if (segsCross(a, b, poly[i], poly[(i + 1) % poly.length])) return true;
+  return false;
+}
+const boxPoly = ([x0, y0, x1, y1]) => [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+function pointSegDist([px, py], [ax, ay], [bx, by]) {
+  const dx = bx - ax; const dy = by - ay; const L = dx * dx + dy * dy;
+  const t = L ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / L)) : 0;
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+function pointToBox(x, y, [x0, y0, x1, y1]) {
+  return Math.hypot(Math.max(x0 - x, 0, x - x1), Math.max(y0 - y, 0, y - y1));
+}
+
+const ids = Object.keys(CITIES);
+const sizeOf = (id, lines = 1) => [(lines === 2 ? width2[id] : width[id]) + PAD_X * 2, PLATE_H + (lines - 1) * 16];
+const OFFS = { n: [0, -17, 'middle'], s: [0, 30, 'middle'], e: [16, 5.5, 'start'], w: [-16, 5.5, 'end'], ne: [12, -13, 'start'], nw: [-12, -13, 'end'], se: [12, 27, 'start'], sw: [-12, 27, 'end'] };
+function originalBox(id) {
+  const c = CITIES[id];
+  const [dx, dy, anchor] = Array.isArray(c.label) ? c.label : OFFS[c.label] ?? OFFS.s;
+  const [W, H] = sizeOf(id);
+  const tx = c.x + dx; const ty = c.y + dy;
+  const x0 = anchor === 'start' ? tx - PAD_X : anchor === 'end' ? tx - W + PAD_X : tx - W / 2;
+  return [x0, ty - 16, x0 + W, ty - 16 + H];
+}
+function leaderOf(id, b) {
+  const e = leaderEnds(CITIES[id], { x: b[0], y: b[1], width: b[2] - b[0], height: b[3] - b[1] });
+  return e ? [[e[0], e[1]], [e[2], e[3]]] : null;
+}
+
+function candidates(id) {
+  const c = CITIES[id];
+  const list = [];
+  for (const lines of width2[id] ? [1, 2] : [1]) {
+  const [W, H] = sizeOf(id, lines);
+  for (let deg = 0; deg < 360; deg += 7.5) {
+    const a = (deg * Math.PI) / 180;
+    const ux = Math.cos(a); const uy = Math.sin(a);
+    const ext = (W / 2) * Math.abs(ux) + (H / 2) * Math.abs(uy);
+    for (const gap of [3, 6, 10, 14, 19, 25, 32, 40]) {
+      const d = DOT_R + gap + ext;
+      const cx = c.x + ux * d; const cy = c.y + uy * d;
+      list.push({ gap, lines, box: [cx - W / 2, cy - H / 2, cx + W / 2, cy + H / 2], cx, cy });
+    }
+  }
+  }
+  return list;
+}
+
+function cost(id, cand, placed) {
+  const b = cand.box;
+  const lead = leaderOf(id, b);
+  let carHit = 0; let leadHit = 0;
+  for (const car of cars) {
+    const overlapsBox = !(car.box[2] < b[0] || car.box[0] > b[2] || car.box[3] < b[1] || car.box[1] > b[3]);
+    if (overlapsBox) carHit += clipArea(car.pts, b);
+    if (lead && segHitsPoly(lead[0], lead[1], car.pts)) leadHit += 1;
+  }
+  let dots = 0; let ambiguous = 0;
+  const me = CITIES[id];
+  const own = pointToBox(me.x, me.y, b);
+  for (const other of ids) {
+    if (other === id) continue;
+    const o = CITIES[other];
+    dots += boxOverlap(b, [o.x - 16, o.y - 16, o.x + 16, o.y + 16]);
+    const d = pointToBox(o.x, o.y, b);
+    if (d < own + 10) ambiguous += own + 10 - d;
+    if (lead && pointSegDist([o.x, o.y], lead[0], lead[1]) < 16) leadHit += 1;
+  }
+  let labels = 0;
+  for (const [other, p] of placed) {
+    if (other === id) continue;
+    labels += boxOverlap(b, p.box);
+    if (lead && segHitsPoly(lead[0], lead[1], boxPoly(p.box))) leadHit += 1;
+    if (p.lead && segHitsPoly(p.lead[0], p.lead[1], boxPoly(b))) leadHit += 1;
+    if (lead && p.lead && segsCross(lead[0], lead[1], p.lead[0], p.lead[1])) leadHit += 1;
+  }
+  const outside = (b[2] - b[0]) * (b[3] - b[1]) - boxOverlap(b, AREA);
+  let deco = 0;
+  for (const [x, y, w, h] of DECOS) deco += boxOverlap(b, [x, y, x + w, y + h]);
+  const ob = originalBox(id);
+  const drift = Math.hypot((b[0] + b[2]) / 2 - (ob[0] + ob[2]) / 2, (b[1] + b[3]) / 2 - (ob[1] + ob[3]) / 2);
+  const leadLen = lead ? Math.hypot(lead[1][0] - lead[0][0], lead[1][1] - lead[0][1]) : 0;
+  return {
+    total: carHit * 10 + leadHit * 20000 + (cand.lines === 2 ? 60 : 0) + dots * 20 + labels * 25 + outside * 40 + deco * 1 + ambiguous * 30 + leadLen * 1.5 + cand.gap * 1 + drift * 0.05,
+    carHit, leadHit, labels, dots, outside, ambiguous, lead,
+  };
+}
+
+const placed = new Map();
+const choice = {};
+for (let pass = 0; pass < 8; pass++) {
+  for (const id of ids) {
+    let best = null;
+    for (const cand of candidates(id)) {
+      const r = cost(id, cand, pass === 0 ? new Map() : placed);
+      if (!best || r.total < best.r.total) best = { cand, r };
+    }
+    choice[id] = best;
+    placed.set(id, { box: best.cand.box, lead: best.r.lead });
+  }
+}
+
+const result = {};
+const problems = [];
+for (const id of ids) {
+  const { cand } = choice[id];
+  const r = cost(id, cand, placed);
+  if (r.carHit > 1 || r.leadHit || r.labels > 1 || r.outside > 1 || r.ambiguous > 0) {
+    problems.push(`${CITIES[id].name}: trilho ${Math.round(r.carHit)}, linha cruza ${r.leadHit}, ambíguo ${Math.round(r.ambiguous)}`);
+  }
+  result[id] = [Math.round((cand.cx - CITIES[id].x) * 2) / 2, Math.round((cand.cy + 5 - CITIES[id].y) * 2) / 2, 'middle'];
+  if (cand.lines === 2) result[id].push(2);
+}
+svg.remove();
+document.getElementById('out').textContent = JSON.stringify({ carClashes: Object.fromEntries(carClashes), problems, result });
+for (const [id, label] of Object.entries(result)) CITIES[id].label = label;
+document.getElementById('wrap').append(createMap());
+document.querySelector('script[type="module"]').remove();
+document.body.dataset.done = '1';
+</script>
+</body>
+</html>

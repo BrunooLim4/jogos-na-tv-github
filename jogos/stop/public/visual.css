@@ -1,0 +1,234 @@
+/* STOP! — PROGRAMA DE AUDITÓRIO: a cara do jogo (o Bruno escolheu entre 3 opções em
+   2026-11-02: "ficou bom! vamos fazer o B"). O Stop como show de TV: palco escuro com
+   holofotes que varrem, a letra num letreiro de lâmpadas que correm em volta, placas
+   que brilham, placar de LED, confete no fim. Letra de letreiro (Bungee) e texto
+   redondo (Baloo 2); dourado, rosa-choque e azul-neon. Vem por cima de style.css
+   (a base) e tv.css (o lugar de cada coisa na TV). */
+
+@font-face { font-family: 'Bungee'; src: url('/fonts/bungee-400.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Baloo 2'; src: url('/fonts/baloo-2-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Baloo 2'; src: url('/fonts/baloo-2-800.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+
+:root {
+  --bg: #120b2e;
+  --panel: rgba(36, 22, 84, 0.88);
+  --panel-2: #2c1b66;
+  --line: #4a34a0;
+  --text: #fff7ea;
+  --text-dim: #b9b0d9;
+  --accent: #ff3d8b;
+  --accent-ink: #fff;
+  --good: #3cf2a0;
+  --warn: #ffb03f;
+  --danger: #ff4d5e;
+  --gold: #ffcf3f;
+  --pink: #ff3d8b;
+  --cyan: #33e1ff;
+  --led: #070313;
+  --plate: linear-gradient(180deg, #3a22a0, #1f1160);
+  --font: 'Baloo 2', system-ui, sans-serif;
+  --sign: 'Bungee', 'Baloo 2', sans-serif;
+}
+body { background: var(--bg); font-weight: 600; }
+
+/* ================================================================ o palco (TV) */
+
+.stage {
+  background:
+    radial-gradient(ellipse 60% 26% at 50% 106%, rgba(255, 207, 63, 0.26), transparent 70%),
+    radial-gradient(ellipse 34% 60% at 14% -8%, rgba(255, 61, 139, 0.30), transparent 70%),
+    radial-gradient(ellipse 34% 60% at 86% -8%, rgba(51, 225, 255, 0.24), transparent 70%),
+    linear-gradient(180deg, #1c1045, var(--bg) 55%, #0a0620);
+}
+/* dois holofotes cruzando devagar (rosa da esquerda, azul da direita) */
+.lights { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.lights i { position: absolute; top: -60px; width: 640px; height: 1320px; transform-origin: 50% 0; clip-path: polygon(47% 0, 53% 0, 100% 100%, 0 100%); filter: blur(10px); will-change: transform; animation: sway 12s ease-in-out infinite alternate; }
+.lights i:first-child { left: 60px; background: linear-gradient(180deg, rgba(255, 61, 139, 0.34), rgba(255, 61, 139, 0) 78%); --from: -30deg; --to: 10deg; }
+.lights i:last-child { right: 60px; background: linear-gradient(180deg, rgba(51, 225, 255, 0.28), rgba(51, 225, 255, 0) 78%); --from: 30deg; --to: -10deg; animation-delay: -6s; }
+@keyframes sway { from { transform: rotate(var(--from)); } to { transform: rotate(var(--to)); } }
+
+/* lâmpadas de letreiro (ui.js addBulbs): acendem em fila, correndo em volta */
+.bulbs { position: absolute; inset: 0; pointer-events: none; --chase: 1.2s; }
+.bulbs i { position: absolute; width: var(--bulb, 12px); height: var(--bulb, 12px); margin: calc(var(--bulb, 12px) / -2) 0 0 calc(var(--bulb, 12px) / -2); border-radius: 50%; background: radial-gradient(circle at 38% 35%, #fff 0 16%, #fff1a8 40%, #ffbf1f 78%); box-shadow: 0 0 calc(var(--bulb, 12px) * 0.9) calc(var(--bulb, 12px) * 0.2) rgba(255, 210, 80, 0.85); animation: chase var(--chase) linear infinite; animation-delay: calc((3 - var(--k)) * var(--chase) / -3); }
+.bulbs.fast { --chase: 0.33s; }
+.bulbs.flash i { animation: flash 0.32s linear infinite; animation-delay: 0s; }
+@keyframes chase { 0%, 32% { opacity: 1; } 36%, 100% { opacity: 0.28; } }
+@keyframes flash { 0%, 48% { opacity: 1; } 52%, 100% { opacity: 0.2; } }
+
+.avatar { box-shadow: 0 0 0 3px #fff, 0 0 14px var(--player); font-family: var(--sign); font-weight: 400; }
+
+/* ---------------------------------------------------------------- sala */
+
+.join-card { border-radius: 30px; background: var(--panel); box-shadow: inset 0 0 0 4px var(--gold), 0 0 40px rgba(255, 207, 63, 0.25); }
+.join-card h2 { font-family: var(--sign); font-weight: 400; color: var(--gold); text-shadow: 0 0 18px rgba(255, 207, 63, 0.5); }
+.qr { box-shadow: 0 0 0 8px var(--pink), 0 0 50px rgba(255, 61, 139, 0.6); }
+.join-steps { font-weight: 800; }
+.join-steps li::marker { color: var(--cyan); font-family: var(--sign); }
+.join-url { color: var(--text-dim); }
+.join-url strong { color: var(--cyan); font-family: var(--sign); font-weight: 400; letter-spacing: 0.02em; }
+.join-note { color: var(--text-dim); }
+
+.sign { border-radius: 40px; background: #150a3e; box-shadow: inset 0 0 0 6px var(--gold), 0 0 0 10px #24104f, 0 0 90px rgba(255, 61, 139, 0.55); --bulb: 17px; }
+/* o miolo do letreiro, com um fio de neon rosa (as lâmpadas ficam na faixa escura em volta) */
+.sign::before { content: ''; position: absolute; inset: 44px; border-radius: 14px; background: linear-gradient(180deg, #2f1880, #1a0c50); box-shadow: inset 0 0 0 2px rgba(255, 61, 139, 0.7), 0 0 18px rgba(255, 61, 139, 0.35); }
+.sign-text { position: relative; z-index: 1; font-family: var(--sign); font-weight: 400; color: var(--gold); text-shadow: 0 8px 0 #8a5a00, 0 0 40px rgba(255, 207, 63, 0.7); animation: sign-glow 2.4s ease-in-out infinite; }
+@keyframes sign-glow { 50% { text-shadow: 0 8px 0 #8a5a00, 0 0 70px rgba(255, 207, 63, 1); } }
+.sign-sub { font-family: var(--sign); font-weight: 400; color: var(--cyan); text-shadow: 0 0 18px rgba(51, 225, 255, 0.7); }
+
+.players-panel h2 { font-family: var(--sign); font-weight: 400; color: #fff; }
+.players-panel .count { color: var(--gold); }
+.seat .desk { border-radius: 18px 18px 8px 8px; background: var(--plate); box-shadow: inset 0 6px 0 var(--gold), inset 0 0 0 3px #5a42c0, 0 14px 26px rgba(0, 0, 0, 0.45); }
+.seat .name { border-radius: 10px; background: var(--led); color: var(--gold); font-weight: 800; text-shadow: 0 0 10px rgba(255, 207, 63, 0.8); }
+.seat .status { display: flex; align-items: center; gap: 8px; font-weight: 800; }
+.seat .status::before { content: ''; width: 12px; height: 12px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor; }
+.status.ready { color: var(--good); }
+.status.waiting { color: var(--text-dim); }
+.status.offline { color: var(--warn); }
+.seat.offline .avatar { filter: grayscale(0.8); }
+.seat.free { opacity: 0.38; }
+.seat.free .desk { box-shadow: inset 0 6px 0 #6b5aa8, inset 0 0 0 3px #3b2a80; }
+.seat.free .avatar { background: #2c1b66; color: var(--text-dim); box-shadow: 0 0 0 3px #6b5aa8; }
+.seat.free .name { color: var(--text-dim); font-weight: 600; text-shadow: none; }
+.seat.join { animation: seat-join 0.6s cubic-bezier(.2, .9, .3, 1.4); }
+@keyframes seat-join { from { transform: translateY(-60px) scale(1.3); opacity: 0; } }
+.start-hint { border-radius: 99px; background: var(--led); color: var(--cyan); font-weight: 800; text-shadow: 0 0 12px rgba(51, 225, 255, 0.7); box-shadow: inset 0 0 0 3px #3b2590, 0 0 24px rgba(51, 225, 255, 0.2); }
+
+/* ---------------------------------------------------------------- partida */
+
+.st-title { font-family: var(--sign); font-weight: 400; font-size: 76px; color: var(--gold); letter-spacing: 0; text-shadow: 0 0 22px rgba(255, 207, 63, 0.6), 0 5px 0 #8a5a00; }
+.st-round { font-family: var(--sign); font-weight: 400; font-size: 26px; color: var(--cyan); }
+/* a letra no letreiro: placa rosa, faixa escura com lâmpadas, aro dourado */
+.st-letter { background: radial-gradient(circle at 50% 38%, #ff6aa8, #d0135f 62%, #9c0d48); color: #fff; font-family: var(--sign); font-weight: 400; text-shadow: 0 0 24px rgba(255, 255, 255, 0.75), 0 6px 0 #7a0036; box-shadow: 0 0 0 16px #24104f, 0 0 0 20px var(--gold), 0 0 70px rgba(255, 61, 139, 0.75); --bulb: 10px; }
+#letter-text { position: relative; z-index: 1; }
+.st-clock { font-family: var(--sign); font-weight: 400; font-size: 70px; color: var(--cyan); text-shadow: 0 0 20px rgba(51, 225, 255, 0.7); }
+.st-clock small { font-family: var(--font); font-weight: 800; color: var(--text-dim); text-shadow: none; }
+.st-clock.late { color: var(--danger); text-shadow: 0 0 20px rgba(255, 77, 94, 0.8); animation: late-pulse 1s ease-in-out infinite; }
+@keyframes late-pulse { 50% { transform: scale(1.08); } }
+.st-heading { font-family: var(--sign); font-weight: 400; color: #fff; text-shadow: 0 4px 0 #3b1f8a; }
+.st-sub { color: var(--text-dim); font-weight: 600; }
+
+/* categorias: placas do programa, com brilho (azul e rosa alternando) */
+.cat { border-radius: 18px; background: var(--plate); color: #fff; font-family: var(--sign); font-weight: 400; box-shadow: inset 0 0 0 4px var(--cyan), inset 0 -10px 0 rgba(0, 0, 0, 0.25), 0 0 26px rgba(51, 225, 255, 0.35); }
+.cat:nth-child(4n+2), .cat:nth-child(4n+3) { box-shadow: inset 0 0 0 4px var(--pink), inset 0 -10px 0 rgba(0, 0, 0, 0.25), 0 0 26px rgba(255, 61, 139, 0.35); }
+
+/* correção: as respostas em placas; os pontos num visor de LED */
+.ans { border-radius: 20px; background: var(--plate); box-shadow: inset 0 0 0 3px #5a42c0, 0 10px 24px rgba(0, 0, 0, 0.35); }
+.ans-who { color: var(--text-dim); font-weight: 800; }
+.ans-text { color: #fff; font-weight: 800; }
+.ans.vazio .ans-text, .ans.letra .ans-text { color: var(--text-dim); font-weight: 600; }
+.ans.excluida { box-shadow: inset 0 0 0 3px var(--danger), 0 0 26px rgba(255, 77, 94, 0.35); }
+.ans.excluida .ans-text { color: var(--text-dim); }
+.ans.excluida::after { content: 'NÃO VALE'; position: absolute; left: 50%; top: 58%; padding: 4px 16px; border: 4px solid var(--danger); border-radius: 12px; background: rgba(18, 11, 46, 0.8); color: var(--danger); font-family: var(--sign); font-size: 30px; white-space: nowrap; transform: translate(-50%, -50%) rotate(-9deg); }
+.animate .ans.excluida { animation: buzz 0.5s ease 0.5s; }
+.animate .ans.excluida::after { animation: stamp-in 0.4s cubic-bezier(.2, .9, .3, 1.3) 0.5s backwards; }
+@keyframes buzz { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+@keyframes stamp-in { from { transform: translate(-50%, -50%) rotate(-9deg) scale(2.4); opacity: 0; } }
+.ans-votes { background: rgba(255, 61, 139, 0.22); color: #ffc1da; font-weight: 800; box-shadow: inset 0 0 0 2px var(--pink); }
+.ans-points { background: var(--led); color: var(--gold); font-family: var(--sign); font-weight: 400; text-shadow: 0 0 12px rgba(255, 207, 63, 0.9); box-shadow: 0 0 0 3px var(--gold), 0 0 22px rgba(255, 207, 63, 0.55), 0 8px 18px rgba(0, 0, 0, 0.5); }
+.ans-points.shared { color: var(--cyan); text-shadow: 0 0 12px rgba(51, 225, 255, 0.9); box-shadow: 0 0 0 3px var(--cyan), 0 0 22px rgba(51, 225, 255, 0.5), 0 8px 18px rgba(0, 0, 0, 0.5); }
+.ans-points.zero { color: #7d72ad; text-shadow: none; box-shadow: 0 0 0 3px #3b2a80, 0 8px 18px rgba(0, 0, 0, 0.5); }
+
+/* placar da rodada / final: painel de LED */
+.round-table li { border-radius: 16px; background: var(--plate); box-shadow: inset 0 0 0 3px #4a34a0; font-weight: 800; }
+.round-table .place { color: var(--cyan); font-size: 34px; } /* (o º da Bungee vem sublinhado) */
+.round-table .gain { color: var(--good); text-shadow: 0 0 12px rgba(60, 242, 160, 0.6); }
+.round-table .total { padding: 0 12px; border-radius: 10px; background: var(--led); color: var(--gold); font-family: var(--sign); font-weight: 400; font-size: 38px; text-shadow: 0 0 12px rgba(255, 207, 63, 0.8); }
+.round-table li.first { box-shadow: inset 0 0 0 4px var(--gold), 0 0 34px rgba(255, 207, 63, 0.45); }
+.round-table li.first .place { color: var(--gold); }
+
+/* os jogadores (direita): placa com aro dourado, pontos no visor de LED */
+.st-players { background: rgba(20, 10, 56, 0.85); box-shadow: inset 0 0 0 3px var(--gold), 0 0 30px rgba(255, 207, 63, 0.25); }
+.st-players h3 { font-family: var(--sign); font-weight: 400; color: var(--gold); }
+.st-player-who { line-height: 1.2; }
+.st-player-name { font-weight: 800; font-size: 28px; }
+.st-player-note { color: var(--text-dim); font-weight: 800; }
+.st-dots i { background: #2c1b66; }
+.st-dots i.on { background: var(--good); box-shadow: 0 0 8px var(--good); }
+.st-score { min-width: 104px; padding: 2px 12px; border-radius: 10px; background: var(--led); color: var(--gold); font-family: var(--sign); font-weight: 400; text-align: right; text-shadow: 0 0 12px rgba(255, 207, 63, 0.8); }
+.st-player .gain { color: var(--good); text-shadow: 0 0 10px rgba(60, 242, 160, 0.7); }
+.st-player.stopper { background: rgba(255, 61, 139, 0.2); box-shadow: inset 0 0 0 3px var(--pink), 0 0 24px rgba(255, 61, 139, 0.5); }
+
+/* o tempo: barra de neon */
+.st-timebar { background: var(--led); box-shadow: inset 0 0 0 2px #3b2590; }
+.st-timebar i { background: linear-gradient(90deg, var(--cyan), var(--pink)); box-shadow: 0 0 18px rgba(51, 225, 255, 0.7); }
+.st-timebar i.late { background: var(--danger); }
+
+/* ---------------------------------------------------------------- revelações */
+
+/* a roleta: o letreiro grande, com as lâmpadas correndo rápido e piscando ao parar */
+.roulette { background: radial-gradient(circle at 50% 38%, #ff6aa8, #d0135f 62%, #9c0d48); color: #fff; font-family: var(--sign); font-weight: 400; text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 12px 0 #7a0036; box-shadow: 0 0 0 34px #24104f, 0 0 0 42px var(--gold), 0 0 160px 30px rgba(255, 61, 139, 0.7); --bulb: 20px; }
+.roulette-face { position: relative; z-index: 1; }
+
+/* carimbos: placa azul (Correção!), rosa (STOP!), vermelha (tempo), dourada (fim) */
+.banner { border-radius: 28px; background: var(--plate); color: var(--text); box-shadow: 0 0 0 8px #24104f, 0 0 0 12px var(--cyan), 0 0 80px rgba(51, 225, 255, 0.55), 0 30px 80px rgba(0, 0, 0, 0.6); }
+.banner-title { font-family: var(--sign); font-weight: 400; color: #fff; text-shadow: 0 6px 0 #0d0630, 0 0 30px rgba(51, 225, 255, 0.7); }
+.banner-sub { font-weight: 800; }
+.banner.stop { background: radial-gradient(circle at 50% 40%, #ff5aa0, #b80f55 70%); box-shadow: 0 0 0 10px #24104f, 0 0 0 16px var(--gold), 0 0 120px rgba(255, 61, 139, 0.9); }
+.banner.stop .banner-title { color: var(--gold); text-shadow: 0 10px 0 #6b0030, 0 0 40px rgba(255, 207, 63, 0.8); }
+.banner.time { background: radial-gradient(circle at 50% 40%, #ff6a76, #b3122a 70%); box-shadow: 0 0 0 8px #24104f, 0 0 0 12px #fff, 0 0 100px rgba(255, 77, 94, 0.9); }
+.banner.time .banner-title { text-shadow: 0 6px 0 #5c0010; }
+.banner.finish { background: radial-gradient(circle at 50% 40%, #3a22a0, #1d1058 70%); box-shadow: 0 0 0 10px #24104f, 0 0 0 16px var(--gold), 0 0 120px rgba(255, 207, 63, 0.7); }
+.banner.finish .banner-title { color: var(--gold); text-shadow: 0 8px 0 #8a5a00, 0 0 40px rgba(255, 207, 63, 0.8); }
+/* raios girando atrás do STOP! e do fim */
+.rays { background: repeating-conic-gradient(from 0deg, rgba(255, 207, 63, 0.24) 0 7deg, transparent 7deg 18deg); -webkit-mask-image: radial-gradient(circle, #000 12%, transparent 62%); mask-image: radial-gradient(circle, #000 12%, transparent 62%); animation: rays-spin 14s linear infinite; }
+.rays.pink { background: repeating-conic-gradient(from 0deg, rgba(255, 61, 139, 0.3) 0 7deg, transparent 7deg 18deg); }
+@keyframes rays-spin { to { transform: rotate(360deg); } }
+.countdown { font-family: var(--sign); font-weight: 400; color: var(--gold); text-shadow: 0 0 50px rgba(255, 207, 63, 0.8), 0 14px 0 #8a5a00; }
+/* confete no fim */
+.confetti i { background: var(--c); animation: fall var(--d) linear var(--delay) forwards; }
+@keyframes fall { to { transform: translate(var(--drift), 1180px) rotate(var(--spin)); } }
+
+/* ================================================================ celular */
+
+body:not(.tv) { background: radial-gradient(ellipse 80% 40% at 50% -5%, rgba(255, 61, 139, 0.35), transparent 70%), linear-gradient(180deg, #1c1045, var(--bg)) fixed; }
+.title { font-family: var(--sign); font-weight: 400; color: var(--gold); text-shadow: 0 0 14px rgba(255, 207, 63, 0.5), 0 3px 0 #8a5a00; }
+.panel { background: var(--panel); border: 0; box-shadow: inset 0 0 0 2px var(--line); }
+.code-chip { background: var(--led); border-color: #3b2590; }
+.code-chip strong { color: var(--cyan); font-family: var(--sign); font-weight: 400; }
+.screen h1 { font-family: var(--sign); font-weight: 400; color: #fff; }
+
+.btn { background: linear-gradient(180deg, #ff6b9e, var(--pink)); color: #fff; font-weight: 800; box-shadow: 0 0 18px rgba(255, 61, 139, 0.45), inset 0 -4px 0 rgba(0, 0, 0, 0.2); }
+.btn:disabled { box-shadow: none; }
+.btn.secondary { background: var(--panel-2); color: var(--text); border: 0; box-shadow: inset 0 0 0 2px var(--line); }
+.btn.ready-on { background: linear-gradient(180deg, #6ff7bd, var(--good)); color: #06281a; box-shadow: 0 0 18px rgba(60, 242, 160, 0.45); }
+.field label { color: var(--cyan); font-family: var(--sign); font-weight: 400; font-size: 0.95rem; }
+.field input { background: #1d1058; border: 2px solid var(--line); font-weight: 800; }
+.field input:focus { outline: 2px solid var(--gold); }
+.color-option { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); }
+.color-option[aria-pressed="true"] { outline: 4px solid var(--gold); box-shadow: 0 0 18px var(--player); }
+
+.me-card { box-shadow: inset 0 0 0 3px var(--gold), 0 0 24px rgba(255, 207, 63, 0.2); }
+.me-card .avatar { box-shadow: 0 0 0 5px #fff, 0 0 30px var(--player); }
+.me-card .me-name { font-family: var(--sign); font-weight: 400; color: var(--gold); }
+.others li { background: var(--panel); box-shadow: inset 0 0 0 2px var(--line); }
+.others h2 { font-family: var(--sign); font-weight: 400; color: var(--cyan); }
+.toast { background: var(--panel-2); border: 0; box-shadow: inset 0 0 0 2px var(--gold); }
+
+/* jogando: a letra no alto, o STOP rosa, as caixinhas */
+.stop-top { background: rgba(20, 10, 56, 0.88); border: 0; box-shadow: inset 0 0 0 2px var(--gold); }
+.stop-letter { background: radial-gradient(circle at 50% 38%, #ff6aa8, #d0135f 62%, #9c0d48); font-family: var(--sign); font-weight: 400; text-shadow: 0 3px 0 #7a0036; box-shadow: 0 0 0 3px var(--gold), 0 0 18px rgba(255, 61, 139, 0.8); }
+.stop-letter.rolling { animation: rolling 0.5s ease-in-out infinite alternate; }
+@keyframes rolling { to { transform: rotate(8deg) scale(1.06); box-shadow: 0 0 0 3px var(--gold), 0 0 30px rgba(255, 61, 139, 1); } }
+.stop-top-text strong { font-family: var(--sign); font-weight: 400; color: var(--gold); }
+.time-bar { background: var(--led); }
+.time-bar i { background: linear-gradient(90deg, var(--cyan), var(--pink)); }
+.time-bar i.late { background: var(--danger); }
+.phone .stop-button { background: linear-gradient(180deg, #ff6b9e, var(--pink)); font-family: var(--sign); font-weight: 400; font-size: 1.6rem; box-shadow: 0 0 22px rgba(255, 61, 139, 0.75), inset 0 -5px 0 rgba(0, 0, 0, 0.2); }
+.phone .stop-button:disabled { font-size: 1.15rem; }
+.phone .stop-button:not(:disabled) { animation: stop-ready 1.1s ease-in-out infinite; }
+@keyframes stop-ready { 50% { box-shadow: 0 0 40px rgba(255, 61, 139, 1), inset 0 -5px 0 rgba(0, 0, 0, 0.2); transform: scale(1.02); } }
+.answer-cat { font-family: var(--sign); font-weight: 400; font-size: 0.85rem; color: var(--cyan); }
+.answer-row input { background: #1d1058; border-color: var(--line); font-weight: 800; }
+.answer-row input:focus { border-color: var(--gold); }
+@keyframes stop-flash { 50% { box-shadow: inset 0 0 0 12px var(--pink); } }
+
+/* correção e placar */
+.review-item { background: var(--plate); box-shadow: inset 0 0 0 2px #5a42c0; }
+.review-item.excluida { box-shadow: inset 0 0 0 2px var(--danger); }
+.review-tag { background: var(--led); }
+.reject { background: #1d1058; border-color: var(--line); }
+.reject[aria-pressed="true"] { border-color: var(--pink); background: rgba(255, 61, 139, 0.3); box-shadow: 0 0 14px rgba(255, 61, 139, 0.6); }
+.score-list li { background: var(--plate); box-shadow: inset 0 0 0 2px #4a34a0; }
+.score-list li.me { outline: 0; box-shadow: inset 0 0 0 3px var(--gold), 0 0 16px rgba(255, 207, 63, 0.35); }
+.score-gain { color: var(--good); }
+.score-total { padding: 0 8px; border-radius: 8px; background: var(--led); color: var(--gold); font-family: var(--sign); font-weight: 400; text-shadow: 0 0 10px rgba(255, 207, 63, 0.8); }

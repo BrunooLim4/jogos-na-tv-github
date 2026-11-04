@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#120b2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Stop! · Controle</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/visual.css">
+</head>
+<body>
+  <div class="phone">
+    <header class="phone-header">
+      <span class="title">Stop!</span>
+      <span class="header-right">
+        <span class="code-chip">sala <strong id="room-code">…</strong></span>
+      </span>
+    </header>
+
+    <section class="screen center-screen" id="screen-loading">
+      <p>Conectando à sala…</p>
+    </section>
+
+    <!-- Entrar na sala -->
+    <form class="screen hidden" id="screen-join" autocomplete="off">
+      <h1>Entrar na sala</h1>
+      <p class="lead">Escolha seu nome e a sua cor.</p>
+      <div class="field">
+        <label for="name-input">Seu nome</label>
+        <input id="name-input" name="name" maxlength="14" placeholder="Ex.: Bruno" enterkeyhint="done" required>
+      </div>
+      <div class="field">
+        <label id="colors-label">Sua cor</label>
+        <div class="colors" id="colors" role="group" aria-labelledby="colors-label"></div>
+      </div>
+      <p class="form-error hidden" id="join-error" role="alert"></p>
+      <div class="actions">
+        <button class="btn" id="join-button" type="submit" disabled>Entrar na sala</button>
+      </div>
+    </form>
+
+    <!-- Dentro da sala -->
+    <section class="screen hidden" id="screen-room">
+      <div class="panel me-card" id="me-card"></div>
+      <button class="btn" id="ready-button" type="button">Estou pronto!</button>
+      <div class="panel leader-box hidden" id="leader-box">
+        <button class="btn" id="start-button" type="button" disabled>Começar partida</button>
+        <p id="leader-hint"></p>
+        <button class="btn secondary tv-sound-button" type="button">🔊 Som da TV: ligado</button>
+      </div>
+      <p class="waiting-leader hidden" id="waiting-leader"></p>
+      <div class="others">
+        <h2 id="others-title">Na sala</h2>
+        <ul id="others-list"></ul>
+      </div>
+      <div class="actions">
+        <button class="link-button" id="leave-button" type="button">Sair da sala</button>
+      </div>
+    </section>
+
+    <!-- Partida -->
+    <section class="screen hidden" id="screen-game">
+      <!-- a letra, a rodada e o tempo (sempre no alto) -->
+      <div class="stop-top" id="stop-top">
+        <span class="stop-letter" id="stop-letter">?</span>
+        <div class="stop-top-text">
+          <strong id="stop-title"></strong>
+          <small id="stop-sub"></small>
+          <div class="time-bar"><i id="time-bar"></i></div>
+        </div>
+      </div>
+
+      <!-- escrevendo: STOP em cima (sem rolar), as categorias embaixo -->
+      <button class="btn stop-button hidden" id="stop-button" type="button">STOP!</button>
+      <form class="answers hidden" id="answers" autocomplete="off"></form>
+
+      <!-- correção: "Tudo certo" em cima, as respostas para votar contra -->
+      <button class="btn hidden" id="ready-review" type="button">Tudo certo ✓</button>
+      <ul class="review-list hidden" id="review-list"></ul>
+
+      <!-- placar e fim -->
+      <button class="btn hidden" id="next-round" type="button">Começar a próxima rodada</button>
+      <button class="btn hidden" id="again-button" type="button">Jogar de novo</button>
+      <ol class="score-list hidden" id="score-list"></ol>
+      <p class="waiting-leader hidden" id="waiting-next"></p>
+
+      <div class="actions">
+        <button class="btn secondary hidden" id="skip-button" type="button">Pular quem está desconectado</button>
+        <button class="btn secondary tv-sound-button hidden" id="game-tv-sound" type="button">🔊 Som da TV: ligado</button>
+        <button class="link-button hidden" id="end-game-button" type="button">Encerrar partida (líder)</button>
+      </div>
+    </section>
+
+    <!-- Mensagens (sala não existe, cheia, removido...) -->
+    <section class="screen center-screen hidden" id="screen-message">
+      <h1 id="message-title"></h1>
+      <p id="message-text"></p>
+      <button class="btn secondary" id="message-button" type="button">Tentar de novo</button>
+    </section>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+  <div class="conn-banner hidden" id="conn-banner">Reconectando…</div>
+
+  <script type="module" src="/phone.js"></script>
+</body>
+</html>
